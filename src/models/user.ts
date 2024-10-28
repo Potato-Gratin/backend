@@ -17,10 +17,10 @@ export const UserModel = {
    * @returns {Promise<string>} 作成したユーザーのID
    * @throws {Error} DB操作に失敗した場合
    */
-  create: async (id: string, displayId: string, name: string, description: string): Promise<string> => {
+  create: async (displayId: string, name: string, description: string): Promise<string> => {
     const { data, error } = await supabase
       .from('user')
-      .insert([{ id, displayId, name, description }])
+      .insert([{displayId, name, description }])
       .select('*');
 
     if (error) {
@@ -28,5 +28,24 @@ export const UserModel = {
     }
     
     return data ? data[0] : '';  // データが存在する場合のみIDを返す
+  },
+  /**
+   * 指定された displayId を持つユーザーを検索する。
+   * @param {string} displayId 検索対象の表示ID
+   * @returns {Promise<User | null>} ユーザー情報または null
+   */
+  findByDisplayId: async (displayId: string): Promise<User | null> => {
+    const { data, error } = await supabase
+      .from('user')
+      .select('*')
+      .eq('displayId', displayId)
+      .single();
+
+    if (error && error.code !== 'PGRST116') { // PGRST116 は空データを意味するエラーコード
+      throw new Error(`User search failed: ${error.message}`);
+    }
+
+    return data || null; // 見つかった場合はユーザー情報、見つからない場合は null を返す
   }
+
 };
