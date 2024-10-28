@@ -22,30 +22,7 @@ export const UserModel = {
       .from('user')
       .insert([{displayId, name, description }])
       .select('*');
-
-    if (error) {
-      throw new Error(`User creation failed: ${error.message}`);
-    }
     
-    return data ? data[0] : '';  // データが存在する場合のみIDを返す
-  },
-  /**
-   * 指定された displayId を持つユーザーを検索する。
-   * @param {string} displayId 検索対象の表示ID
-   * @returns {Promise<User | null>} ユーザー情報または null
-   */
-  findByDisplayId: async (displayId: string): Promise<User | null> => {
-    const { data, error } = await supabase
-      .from('user')
-      .select('*')
-      .eq('displayId', displayId)
-      .single();
-
-    if (error && error.code !== 'PGRST116') { // PGRST116 は空データを意味するエラーコード
-      throw new Error(`User search failed: ${error.message}`);
-    }
-
-    return data || null; // 見つかった場合はユーザー情報、見つからない場合は null を返す
+    return {data, error};  // データが存在する場合のみIDを返す
   }
-
 };
