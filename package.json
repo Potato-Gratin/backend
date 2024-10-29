@@ -12,8 +12,10 @@
 		"format": "biome format",
 		"check": "biome check",
 		"check:fix": "biome check --write",
-		"supabase:start": "npx supabase start",
-		"supabase:stop": "npx supabase stop"
+		"db:start": "npx supabase start",
+		"db:stop": "npx supabase stop",
+		"db:pull": "npx supabase db pull",
+		"db:reset": "npx supabase db reset"
 	},
 	"author": "",
 	"license": "MIT",
