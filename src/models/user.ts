@@ -1,7 +1,7 @@
-import { supabase } from '../libs/supabase'; // supabaseクライアントをインポート
+import { supabase } from '../libs/supabase';
 
 interface User {
-  id: string;          // UUID型をstringで表現
+  id: string;          
   displayId: string;
   name: string;
   description: string;
@@ -10,7 +10,6 @@ interface User {
 export const UserModel = {
   /**
    * ユーザーを作成する。
-   * @param {string} id ユーザーID (UUID形式)
    * @param {string} displayId 表示ID
    * @param {string} name ユーザー名
    * @param {string} description 説明
@@ -20,9 +19,24 @@ export const UserModel = {
   create: async (displayId: string, name: string, description: string): Promise<string> => {
     const { data, error } = await supabase
       .from('user')
-      .insert([{displayId, name, description }])
-      .select('*');
-    
-    return {data, error};  // データが存在する場合のみIDを返す
+      .insert([{ displayId, name, description }])
+      .select('id'); 
+      
+    if (error) {
+      switch (error.code) {
+        case '23505': // unique_violation
+          throw new Error('displayId is conflicted');
+        case '23502': // not_null_violation
+          throw new Error('displayId is required');
+        default:
+          throw new Error(`Database Error: ${error.message}`);
+      }
+    }
+
+    if (data && data[0]) {
+      return data[0].id;
+    } else {
+      throw new Error('User creation failed: No data returned');
+    }
   }
 };
