@@ -11,7 +11,9 @@
 		"format": "biome format",
 		"check": "biome check",
 		"check:fix": "biome check --write",
-		"start": "ts-node dist/index.js"
+		"start": "ts-node dist/index.js",
+		"supabase:start": "npx supabase start",
+		"supabase:stop": "npx supabase stop"
 	},
 	"author": "",
 	"license": "MIT",
