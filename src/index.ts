@@ -1,7 +1,3 @@
-import express from "express";
-const app: express.Express = express();
-const port = 3000;
-
 import { articleRouter } from "./routes/article";
 import { badgeRouter } from "./routes/badge";
 import { badgeFlameRouter } from "./routes/badge_flame";
@@ -10,6 +6,11 @@ import { favoriteRouter } from "./routes/favorite";
 import { reviewRouter } from "./routes/review";
 import { reviewVoteRouter } from "./routes/review_vote";
 import { userRouter } from "./routes/user";
+import "dotenv/config";
+
+import express from "express";
+const app: express.Express = express();
+const port = 3000;
 
 app.use("/users", userRouter);
 app.use("/articles", articleRouter);
