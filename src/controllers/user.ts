@@ -21,9 +21,9 @@ export const UserController = {
 
       // ユーザー作成処理
       const userId = await UserModel.create(displayId, name, description);
-
-      // 成功した場合、リダイレクト先にユーザーIDを含めて詳細ページにリダイレクト
-      return res.status(201).redirect(`/rooms/${userId}`);
+      
+      //ここのリダイレクト先ホーム画面のパスがわからん
+      return res.status(201).redirect(`/index`);
     } catch (error: any) {
       // エラーハンドリング
       if (error.message === 'displayId is conflicted') {
