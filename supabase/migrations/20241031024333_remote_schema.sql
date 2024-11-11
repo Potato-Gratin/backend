@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS "public"."article" (
     "content" "text",
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "published_at" timestamp with time zone,
-    "updated_at" timestamp with time zone NOT NULL,
+    "updated_at" timestamp with time zone NOT NULL DEFAULT "now"() NOT NULL,
     "is_public" boolean DEFAULT false NOT NULL,
     "view_count" bigint DEFAULT '0'::bigint NOT NULL,
     "user_id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS "public"."badge" (
     "review_id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "user_id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp with time zone NOT NULL
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
 );
 
 
@@ -137,7 +137,7 @@ CREATE TABLE IF NOT EXISTS "public"."favorite" (
     "user_id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "article_id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp with time zone NOT NULL
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
 );
 
 
@@ -153,7 +153,7 @@ CREATE TABLE IF NOT EXISTS "public"."review" (
     "article_id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "content" "text" NOT NULL,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp with time zone NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "user_id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "parent_review_id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "parent_article_id" "uuid",
@@ -173,7 +173,7 @@ CREATE TABLE IF NOT EXISTS "public"."review_vote" (
     "user_id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "score" bigint NOT NULL,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "updated_at" timestamp with time zone NOT NULL
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL
 );
 
 
@@ -189,8 +189,8 @@ CREATE TABLE IF NOT EXISTS "public"."user" (
     "display_id" "text" DEFAULT ''::"text" NOT NULL,
     "name" "text" DEFAULT ''::"text" NOT NULL,
     "description" "text",
-    "updated_at" timestamp with time zone NOT NULL,
-    "created_at" timestamp with time zone DEFAULT "now"(),
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     CONSTRAINT "user_description_check" CHECK (("length"("description") <= 400)),
     CONSTRAINT "user_display_id_check" CHECK ((("length"("display_id") >= 1) AND ("length"("display_id") <= 15))),
     CONSTRAINT "user_name_check" CHECK ((("length"("name") >= 1) AND ("length"("name") <= 15)))
