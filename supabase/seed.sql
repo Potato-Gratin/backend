@@ -1,5 +1,5 @@
 -- user テーブルに30件のデータをシードするクエリ
-INSERT INTO user (display_id, name, description)
+INSERT INTO "public"."user" (display_id, name, description)
 VALUES
   ('user001', 'Taro', 'こんにちは、Taroです。これはサンプルの説明です。'),
   ('user002', 'Hanako', 'Hanakoのプロフィールへようこそ！簡単な説明を追加しています。'),
