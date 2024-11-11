@@ -1,26 +1,29 @@
 import supabase from '../libs/supabase';
 
-interface User {
+export interface User {
   id: string;          
-  displayId: string;
+  display_id: string;
   name: string;
-  description: string;
+  description: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export const UserModel = {
   /**
    * ユーザーを作成する。
-   * @param {string} displayId 表示ID
+   * @param {string} display_id 表示ID
    * @param {string} name ユーザー名
    * @param {string} description 説明
-   * @returns {Promise<string>} 作成したユーザーのID
+   * @returns {Promise<User>} 作成したユーザー
    * @throws {Error} DB操作に失敗した場合
    */
-  create: async (displayId: string, name: string, description: string): Promise<string> => {
+  create: async (display_id: string, name: string, description: string): Promise<User> => {
     const { data, error } = await supabase
       .from('user')
-      .insert([{ displayId, name, description }])
-      .select('id'); 
+      .insert({ display_id, name, description })
+      .select("*")
+      .single(); 
       
     if (error) {
       switch (error.code) {
@@ -33,10 +36,6 @@ export const UserModel = {
       }
     }
 
-    if (data && data[0]) {
-      return data[0].id;
-    } else {
-      throw new Error('User creation failed: No data returned');
-    }
+    return data;    
   }
 };
