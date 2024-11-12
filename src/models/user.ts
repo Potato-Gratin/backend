@@ -1,7 +1,7 @@
 import supabase from '../libs/supabase';
 
 export interface User {
-  id: string;          
+  id: string;
   display_id: string;
   name: string;
   description: string | null;
@@ -23,19 +23,20 @@ export const UserModel = {
       .from('user')
       .insert({ display_id, name, description })
       .select("*")
-      .single(); 
-      
+      .single();
+
     if (error) {
       switch (error.code) {
-        case '23505': 
+        case '23505':
           throw new Error('displayId is conflicted');
-        case '23502': 
+        case '23502':
           throw new Error('displayId is required');
         default:
+          console.log(error.code);
           throw new Error(`Database Error: ${error.message}`);
       }
     }
 
-    return data;    
+    return data;
   }
 };

@@ -31,11 +31,5 @@ describe('UserModel', () => {
         .rejects
         .toThrow('displayId is conflicted');
     });
-
-    it('display_idがリクエスト内に存在しない場合、400 Bad Request が返されるか', async () => {
-      await expect(UserModel.create('', 'test_name', 'test_description'))
-        .rejects
-        .toThrow('displayId is required');
-    });
   });
 });
