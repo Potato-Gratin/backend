@@ -1,66 +1,48 @@
-import { UserModel } from '../../models/user';
+import { UserModel, User } from '../../models/user';
 import supabase from '../../libs/supabase';
 
-jest.mock('../../libs/supabase');
+const testDisplayId = 'test_display_id';
 
-describe('UserModel.create', () => {
-  afterEach(() => {
-    jest.clearAllMocks();
+describe('UserModel', () => {
+  beforeEach(async () => {
+    await supabase.from('user').delete().eq('display_id', testDisplayId);
   });
 
-  it('ユーザーが正常に作成される', async () => {
-    const mockUser = {
-      id: '1',
-      display_id: 'test_display_id',
-      name: 'test_name',
-      description: 'test_description',
-      created_at: '2023-01-01T00:00:00Z',
-      updated_at: '2023-01-01T00:00:00Z',
-    };
-
-    (supabase.from as jest.Mock).mockReturnValue({
-      insert: jest.fn().mockReturnThis(),
-      select: jest.fn().mockReturnThis(),
-      single: jest.fn().mockResolvedValue({ data: mockUser, error: null }),
-    });
-
-    const result = await UserModel.create('test_display_id', 'test_name', 'test_description');
-    expect(result).toEqual(mockUser);
+  afterEach(async () => {
+    await supabase.from('user').delete().eq('display_id', testDisplayId);
   });
 
-  it('表示IDが重複したときは 409 Conflicted を返す', async () => {
-    (supabase.from as jest.Mock).mockReturnValue({
-      insert: jest.fn().mockReturnThis(),
-      select: jest.fn().mockReturnThis(),
-      single: jest.fn().mockResolvedValue({ data: null, error: { code: '23505' } }),
+  describe('create', () => {
+    it('should create a user successfully', async () => {
+      const user = await UserModel.create(testDisplayId, 'test_name', 'test_description');
+      expect(user).toMatchObject({
+        display_id: testDisplayId,
+        name: 'test_name',
+        description: 'test_description'
+      });
+      expect(user).toHaveProperty('id');
+      expect(user).toHaveProperty('created_at');
+      expect(user).toHaveProperty('updated_at');
     });
 
-    await expect(UserModel.create('test_display_id', 'test_name', 'test_description'))
-      .rejects
-      .toMatchObject({ status: 409 })
-  });
-
-  it('表示IDがなかった場合は 400 Bad Request を返す', async () => {
-    (supabase.from as jest.Mock).mockReturnValue({
-      insert: jest.fn().mockReturnThis(),
-      select: jest.fn().mockReturnThis(),
-      single: jest.fn().mockResolvedValue({ data: null, error: { code: '23502' } }),
+    it('should throw an error if display_id is conflicted', async () => {
+      await UserModel.create(testDisplayId, 'test_name', 'test_description');
+      await expect(UserModel.create(testDisplayId, 'test_name', 'test_description'))
+        .rejects
+        .toThrow('displayId is conflicted');
     });
 
-    await expect(UserModel.create('test_display_id', 'test_name', 'test_description'))
-      .rejects
-      .toMatchObject({ status: 400 });
-  });
-
-  it('DBに異常があった場合は 500 Internal Server Error を返す', async () => {
-    (supabase.from as jest.Mock).mockReturnValue({
-      insert: jest.fn().mockReturnThis(),
-      select: jest.fn().mockReturnThis(),
-      single: jest.fn().mockResolvedValue({ data: null, error: { code: '99999', message: 'Unknown error' } }),
+    it('should throw an error if display_id is required', async () => {
+      await expect(UserModel.create('', 'test_name', 'test_description'))
+        .rejects
+        .toThrow('displayId is required');
     });
 
-    await expect(UserModel.create('test_display_id', 'test_name', 'test_description'))
-      .rejects
-      .toThrow('Database Error: Unknown error');
+    it('should throw a generic database error', async () => {
+      // このテストは実際のデータベースエラーを引き起こすための特別な設定が必要です
+      await expect(UserModel.create(testDisplayId, 'test_name', 'test_description'))
+        .rejects
+        .toThrow('Database Error: some database error');
+    });
   });
 });
