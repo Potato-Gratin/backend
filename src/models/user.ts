@@ -43,4 +43,24 @@ export const UserModel = {
 
 		return data;
 	},
+
+	findByDisplayId: async (display_id: string): Promise<User | null> => {
+		/**
+		 * 指定した表示IDのユーザーを検索する。
+		 * @param {string} display_id 表示ID
+		 * @returns {Promise<User | null>} 見つかったユーザー、または null
+		 * @throws {Error} DB操作に失敗した場合
+		 */
+		const { data, error } = await supabase
+			.from("user")
+			.select("*")
+			.eq("display_id", display_id)
+			.single();
+
+		if (error) {
+			throw new Error(`Database Error: ${error.message}`);
+		}
+
+		return data;
+	}
 };

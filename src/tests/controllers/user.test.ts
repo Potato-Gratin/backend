@@ -85,4 +85,58 @@ describe("UserController", () => {
 			});
 		});
 	});
+
+	describe("findByDisplayId", () => {
+		let req: Partial<Request>;
+		let res: Partial<Response>;
+		let statusMock: jest.Mock;
+		let jsonMock: jest.Mock;
+
+		beforeEach(() => {
+			req = {
+				params: {
+					displayId: "testDisplayId",
+				},
+			};
+			statusMock = jest.fn().mockReturnThis();
+			jsonMock = jest.fn();
+			res = {
+				status: statusMock,
+				json: jsonMock,
+			};
+		});
+
+		it("ユーザーが見つかった場合、200 OK を返すか", async () => {
+			const user = {
+				displayId: "testDisplayId",
+				name: "testName",
+				description: "testDescription",
+			};
+
+			(UserModel.findByDisplayId as jest.Mock).mockResolvedValue(user);
+
+			await UserController.findByDisplayId(req as Request, res as Response);
+
+			expect(statusMock).toHaveBeenCalledWith(200);
+			expect(jsonMock).toHaveBeenCalledWith(user);
+		});
+
+		it("ユーザーが見つからない場合、404 Not Found を返すか", async () => {
+			(UserModel.findByDisplayId as jest.Mock).mockResolvedValue(null);
+
+			await UserController.findByDisplayId(req as Request, res as Response);
+
+			expect(statusMock).toHaveBeenCalledWith(404);
+			expect(jsonMock).toHaveBeenCalledWith({ message: "User not found" });
+		});
+
+		it("サーバーエラーが発生した場合、500 Internal Server Error を返すか", async () => {
+			(UserModel.findByDisplayId as jest.Mock).mockRejectedValue(new Error("some other error"));
+
+			await UserController.findByDisplayId(req as Request, res as Response);
+
+			expect(statusMock).toHaveBeenCalledWith(500);
+			expect(jsonMock).toHaveBeenCalledWith({ message: "Internal Server Error" });
+		});
+	});
 });
