@@ -43,4 +43,18 @@ export const UserModel = {
 
 		return data;
 	},
+
+	findByDisplayId: async (display_id: string): Promise<User | null> => {
+		const { data, error } = await supabase
+			.from("user")
+			.select("*")
+			.eq("display_id", display_id)
+			.single();
+
+		if (error) {
+			throw new Error(`Database Error: ${error.message}`);
+		}
+
+		return data;
+	}
 };
