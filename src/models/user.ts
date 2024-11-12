@@ -37,5 +37,26 @@ export const UserModel = {
     }
 
     return data;    
+  },
+
+  /**
+ * ユーザーをIDで検索する。
+ * 存在しない場合はnullを返す。
+ * @param id ユーザーID
+ * @returns ユーザー情報またはnull
+ */
+  findById: async (id: string): Promise<User | null> => {
+  const { data, error } = await supabase
+    .from('user')
+    .select('*')
+    .eq('id', id);
+
+  if (error) {
+    throw new Error(`User search failed: ${error.message}`);
   }
-};
+
+  
+  return data[0];
+}
+
+}
