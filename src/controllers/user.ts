@@ -34,12 +34,12 @@ export const UserController = {
 					res.status(400).json({ message: error.message });
 				} else {
 					res.status(500).json({
-						message: "ユーザーの作成に失敗しました",
+						message: "user creation failed",
 					});
 				}
 			} else {
 				res.status(500).json({
-					message: "不明なエラーが発生しました",
+					message: "An unknown error occurred",
 				});
 			}
 		}

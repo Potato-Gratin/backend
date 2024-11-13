@@ -80,8 +80,7 @@ describe("UserController", () => {
 
 			expect(statusMock).toHaveBeenCalledWith(500);
 			expect(jsonMock).toHaveBeenCalledWith({
-				message: "ユーザーの作成に失敗しました",
-				error: "some other error",
+				message: "user creation failed",
 			});
 		});
 	});
