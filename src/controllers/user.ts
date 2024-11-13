@@ -34,14 +34,30 @@ export const UserController = {
 					res.status(400).json({ message: error.message });
 				} else {
 					res.status(500).json({
-						message: "ユーザーの作成に失敗しました",
+						message: "user creation failed",
 					});
 				}
 			} else {
 				res.status(500).json({
-					message: "不明なエラーが発生しました",
+					message: "An unknown error occurred",
 				});
 			}
+		}
+	},
+
+	findByDisplayId: async (req: Request, res: Response) => {
+		try {
+			const { displayId } = req.params;
+
+			const user = await UserModel.findByDisplayId(displayId);
+
+			if (!user) {
+				res.status(404).json({ message: "User not found" });
+			} else {
+				res.status(200).json(user);
+			}
+		} catch (error) {
+			res.status(500).json({ message: "Internal Server Error" });
 		}
 	},
 };
