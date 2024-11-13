@@ -71,7 +71,7 @@ export const UserModel = {
 	 * @returns {Promise<User>} 更新したユーザー
 	 * @throws {Error} DB操作に失敗した場合
 	 */
-	updateByDispalyId: async (
+	updateByDisplayId: async (
 		display_id: string,
 		updatedData:Partial<User>
 	): Promise<User> => {
