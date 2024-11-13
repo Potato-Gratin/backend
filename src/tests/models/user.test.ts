@@ -19,19 +19,23 @@ describe("UserModel", () => {
 
 	describe("create", () => {
 		it("ユーザーが正常に追加されているか", async () => {
-			const user = await UserModel.create(
-				"new_display_id",
-				"new_name",
-				"new_description",
-			);
-			expect(user).toMatchObject({
-				display_id: "new_display_id",
-				name: "new_name",
-				description: "new_description",
-			});
-			expect(user).toHaveProperty("id");
-			expect(user).toHaveProperty("created_at");
-			expect(user).toHaveProperty("updated_at");
+			try {
+				const user = await UserModel.create(
+					"new_display_id",
+					"new_name",
+					"new_description",
+				);
+				expect(user).toMatchObject({
+					display_id: "new_display_id",
+					name: "new_name",
+					description: "new_description",
+				});
+				expect(user).toHaveProperty("id");
+				expect(user).toHaveProperty("created_at");
+				expect(user).toHaveProperty("updated_at");
+			} finally {
+				await supabase.from("user").delete().eq("display_id", "new_display_id");
+			}
 		});
 
 		it("表示IDが重複した場合は 409 conflict が返されるか", async () => {
@@ -89,6 +93,28 @@ describe("UserModel", () => {
 				name: "updated_name",
 				description: "updated_description",
 			});
+		});
+
+		it("更新後の表示IDが重複した場合は 409 conflict が返されるか", async () => {
+			const duplicatedDisplayId = "duplicated_display_id";
+
+			try {
+				await supabase.from("user").insert({
+					display_id: duplicatedDisplayId,
+					name: "new_name",
+					description: "new_description"
+				})
+				await expect(
+					UserModel.updateByDisplayId(testDisplayId, {
+						display_id: duplicatedDisplayId,
+						name: "test_name",
+						description: "test_description",
+					}),
+				).rejects.toThrow("displayId is conflicted");
+
+			} finally {
+				await supabase.from("user").delete().eq("display_id", duplicatedDisplayId);
+			}
 		});
 	});
 });
