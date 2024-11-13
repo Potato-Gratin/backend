@@ -80,8 +80,7 @@ describe("UserController", () => {
 
 			expect(statusMock).toHaveBeenCalledWith(500);
 			expect(jsonMock).toHaveBeenCalledWith({
-				message: "ユーザーの作成に失敗しました",
-				error: "some other error",
+				message: "user creation failed",
 			});
 		});
 	});
@@ -131,12 +130,16 @@ describe("UserController", () => {
 		});
 
 		it("サーバーエラーが発生した場合、500 Internal Server Error を返すか", async () => {
-			(UserModel.findByDisplayId as jest.Mock).mockRejectedValue(new Error("some other error"));
+			(UserModel.findByDisplayId as jest.Mock).mockRejectedValue(
+				new Error("some other error"),
+			);
 
 			await UserController.findByDisplayId(req as Request, res as Response);
 
 			expect(statusMock).toHaveBeenCalledWith(500);
-			expect(jsonMock).toHaveBeenCalledWith({ message: "Internal Server Error" });
+			expect(jsonMock).toHaveBeenCalledWith({
+				message: "Internal Server Error",
+			});
 		});
 	});
 });
