@@ -43,6 +43,25 @@ export const UserModel = {
 		return data;
 	},
 
+	findById: async (id: string): Promise<User | null> => {
+		/**
+		 * 指定した表示IDのユーザーを検索する。
+		 * @param {string} id 表示ID
+		 * @returns {Promise<User | null>} 見つかったユーザー、または null
+		 * @throws {Error} DB操作に失敗した場合
+		 */
+		const { data, error } = await supabase
+			.from("user")
+			.select("*")
+			.eq("id", id);
+
+		if (error) {
+			throw new Error(`Database Error: ${error.message}`);
+		}
+
+		return data[0] || null;
+	},
+
 	findByDisplayId: async (display_id: string): Promise<User | null> => {
 		/**
 		 * 指定した表示IDのユーザーを検索する。
@@ -53,14 +72,13 @@ export const UserModel = {
 		const { data, error } = await supabase
 			.from("user")
 			.select("*")
-			.eq("display_id", display_id)
-			.single();
+			.eq("display_id", display_id);
 
 		if (error) {
 			throw new Error(`Database Error: ${error.message}`);
 		}
 
-		return data;
+		return data[0] || null;
 	},
 
   /**
