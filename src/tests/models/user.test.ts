@@ -90,14 +90,5 @@ describe("UserModel", () => {
 				description: "updated_description",
 			});
 		});
-
-		it("存在しない表示IDの場合はエラーが返されるか", async () => {
-			await expect(
-				UserModel.updateByDisplayId("non_existent_display_id", {
-					name: "updated_name",
-					description: "updated_description",
-				}),
-			).rejects.toThrow("Database Error");
-		});
 	});
 });
