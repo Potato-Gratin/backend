@@ -54,14 +54,13 @@ export const UserModel = {
 		const { data, error } = await supabase
 			.from("user")
 			.select("*")
-			.eq("id", id)
-			.single();
+			.eq("id", id);
 
 		if (error) {
 			throw new Error(`Database Error: ${error.message}`);
 		}
 
-		return data;
+		return data[0] || null;
 	},
 
 	findByDisplayId: async (display_id: string): Promise<User | null> => {
@@ -74,13 +73,12 @@ export const UserModel = {
 		const { data, error } = await supabase
 			.from("user")
 			.select("*")
-			.eq("display_id", display_id)
-			.single();
+			.eq("display_id", display_id);
 
 		if (error) {
 			throw new Error(`Database Error: ${error.message}`);
 		}
 
-		return data;
+		return data[0] || null;
 	},
 };
