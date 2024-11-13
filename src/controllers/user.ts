@@ -45,6 +45,22 @@ export const UserController = {
 		}
 	},
 
+	findById: async (req: Request, res: Response) => {
+		try {
+			const { id } = req.params;
+
+			const user = await UserModel.findByDisplayId(id);
+
+			if (!user) {
+				res.status(404).json({ message: "User not found" });
+			} else {
+				res.status(200).json(user);
+			}
+		} catch (error) {
+			res.status(500).json({ message: "Internal Server Error" });
+		}
+	},
+
 	findByDisplayId: async (req: Request, res: Response) => {
 		try {
 			const { displayId } = req.params;
