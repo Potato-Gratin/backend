@@ -85,8 +85,6 @@ export const UserModel = {
 			switch (error.code) {
 				case "23505":
 					throw new Error("displayId is conflicted");
-				case "23502":
-					throw new Error("displayId is required");
 				default:
 					console.log(error.code);
 					throw new Error(`Database Error: ${error.message}`);
