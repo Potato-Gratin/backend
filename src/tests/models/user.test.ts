@@ -36,7 +36,6 @@ describe("UserModel", () => {
 			} finally {
 				await supabase.from("user").delete().eq("display_id", "hoge");
 			}
-
 		});
 
 		it("表示IDが重複した場合は 409 conflict が返されるか", async () => {
@@ -60,7 +59,9 @@ describe("UserModel", () => {
 		});
 
 		it("存在しないIDの場合は null が返されるか", async () => {
-			const user = await UserModel.findById("00000000-0000-0000-0000-000000000000");
+			const user = await UserModel.findById(
+				"00000000-0000-0000-0000-000000000000",
+			);
 			expect(user).toBeNull();
 		});
 	});

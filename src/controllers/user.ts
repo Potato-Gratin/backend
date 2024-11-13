@@ -45,7 +45,7 @@ export const UserController = {
 		}
 	},
 
-  findById: async (req: Request, res: Response) => {
+	findById: async (req: Request, res: Response) => {
 		try {
 			const { id } = req.params;
 

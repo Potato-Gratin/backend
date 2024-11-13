@@ -44,7 +44,7 @@ export const UserModel = {
 		return data;
 	},
 
-  findById: async (id: string): Promise<User | null> => {
+	findById: async (id: string): Promise<User | null> => {
 		/**
 		 * 指定した表示IDのユーザーを検索する。
 		 * @param {string} id 表示ID
