@@ -62,5 +62,5 @@ export const UserModel = {
 		}
 
 		return data;
-	}
+	},
 };

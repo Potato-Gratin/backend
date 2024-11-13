@@ -53,5 +53,4 @@ describe("UserModel", () => {
 			expect(user).toBeNull();
 		});
 	});
-
 });
