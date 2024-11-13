@@ -77,32 +77,35 @@ export const UserController = {
 		}
 	},
 
-  updateByDisplayId: async (req: Request, res: Response) => {
-    try {
-      const displayId = req.params.displayId;
-      const updatedData = req.body;
+	updateByDisplayId: async (req: Request, res: Response) => {
+		try {
+			const displayId = req.params.displayId;
+			const updatedData = req.body;
 
-      const updatedUser = await UserModel.updateByDisplayId(displayId, updatedData);
-      res.status(200).json(updatedUser);
-  } catch (error) {
-      if (error instanceof Error) {
-          if (error.message === "displayId is conflicted") {
-              res.status(409).json({ message: error.message });
-          } else if (
-              error.message === "displayId is required" ||
-              error.message === "name is required"
-          ) {
-              res.status(400).json({ message: error.message });
-          } else {
-              res.status(500).json({
-                  message: "user creation failed",
-              });
-          }
-      } else {
-          res.status(500).json({
-              message: "An unknown error occurred",
-          });
-      }
-  }
-}
+			const updatedUser = await UserModel.updateByDisplayId(
+				displayId,
+				updatedData,
+			);
+			res.status(200).json(updatedUser);
+		} catch (error) {
+			if (error instanceof Error) {
+				if (error.message === "displayId is conflicted") {
+					res.status(409).json({ message: error.message });
+				} else if (
+					error.message === "displayId is required" ||
+					error.message === "name is required"
+				) {
+					res.status(400).json({ message: error.message });
+				} else {
+					res.status(500).json({
+						message: "user creation failed",
+					});
+				}
+			} else {
+				res.status(500).json({
+					message: "An unknown error occurred",
+				});
+			}
+		}
+	},
 };

@@ -81,7 +81,7 @@ export const UserModel = {
 		return data[0] || null;
 	},
 
-  /**
+	/**
 	 * ユーザーを作成する。
 	 * @param {string} display_id 表示ID
 	 * @param {Object} updatedData 更新するユーザ情報
@@ -90,13 +90,13 @@ export const UserModel = {
 	 */
 	updateByDisplayId: async (
 		display_id: string,
-		updatedData:Partial<User>
+		updatedData: Partial<User>,
 	): Promise<User> => {
 		const { data, error } = await supabase
 			.from("user")
 			.update(updatedData)
-			.eq('display_id', display_id)
-      .select()
+			.eq("display_id", display_id)
+			.select();
 
 		if (error) {
 			switch (error.code) {

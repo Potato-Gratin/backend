@@ -102,8 +102,8 @@ describe("UserModel", () => {
 				await supabase.from("user").insert({
 					display_id: duplicatedDisplayId,
 					name: "new_name",
-					description: "new_description"
-				})
+					description: "new_description",
+				});
 				await expect(
 					UserModel.updateByDisplayId(testDisplayId, {
 						display_id: duplicatedDisplayId,
@@ -111,9 +111,11 @@ describe("UserModel", () => {
 						description: "test_description",
 					}),
 				).rejects.toThrow("displayId is conflicted");
-
 			} finally {
-				await supabase.from("user").delete().eq("display_id", duplicatedDisplayId);
+				await supabase
+					.from("user")
+					.delete()
+					.eq("display_id", duplicatedDisplayId);
 			}
 		});
 	});
