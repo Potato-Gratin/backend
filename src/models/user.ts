@@ -90,11 +90,11 @@ export const UserModel = {
 	 */
 	updateByDisplayId: async (
 		display_id: string,
-		updatedData: Partial<User>,
+		updateData: Partial<User>,
 	): Promise<User> => {
 		const { data, error } = await supabase
 			.from("user")
-			.update(updatedData)
+			.update(updateData)
 			.eq("display_id", display_id)
 			.select();
 

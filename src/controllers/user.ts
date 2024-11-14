@@ -80,11 +80,11 @@ export const UserController = {
 	updateByDisplayId: async (req: Request, res: Response) => {
 		try {
 			const displayId = req.params.displayId;
-			const updatedData = req.body;
+			const updateData = req.body;
 
 			const updatedUser = await UserModel.updateByDisplayId(
 				displayId,
-				updatedData,
+				updateData,
 			);
 			res.status(200).json(updatedUser);
 		} catch (error) {
