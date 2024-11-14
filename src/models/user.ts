@@ -98,14 +98,19 @@ export const UserModel = {
 			.eq("display_id", display_id)
 			.select();
 
-		if (error) {
-			switch (error.code) {
-				case "23505":
-					throw new Error("displayId is conflicted");
-				default:
-					throw new Error(`Database Error: ${error.message}`);
+			if (error) {
+				switch (error.code) {
+					case "23505":  
+						throw new Error("displayId is conflicted");
+					case "23514":  
+						if (error.message.includes("user_display_id_check")) {
+							throw new Error("displayId is conflicted");
+						}
+					default:
+						console.log(error.code);
+						throw new Error(`Database Error: ${error.message}`);
+				}
 			}
-		}
 
 		return data[0];
 	},
