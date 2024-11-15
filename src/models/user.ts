@@ -36,7 +36,6 @@ export const UserModel = {
 				case "23502":
 					throw new Error("displayId is required");
 				default:
-					console.log(error.code);
 					throw new Error(`Database Error: ${error.message}`);
 			}
 		}
@@ -80,5 +79,44 @@ export const UserModel = {
 		}
 
 		return data[0] || null;
+	},
+
+	/**
+	 * ユーザーを作成する。
+	 * @param {string} display_id 表示ID
+	 * @param {Object} updatedData 更新するユーザ情報
+	 * @returns {Promise<User>} 更新したユーザー
+	 * @throws {Error} DB操作に失敗した場合
+	 */
+	updateByDisplayId: async (
+		display_id: string,
+		updateData: Partial<User>,
+	): Promise<User> => {
+		const { data, error } = await supabase
+			.from("user")
+			.update(updateData)
+			.eq("display_id", display_id)
+			.select();
+
+		if (error) {
+			switch (error.code) {
+				case "23505":
+					throw new Error("displayId is conflicted");
+				case "23514":
+					if (error.message.includes("user_display_id_check")) {
+						throw new Error("displayId is conflicted");
+					}
+					break;
+				default:
+					console.log(error.code);
+					throw new Error(`Database Error: ${error.message}`);
+			}
+		}
+
+		if (!data || data.length === 0) {
+			throw new Error("No data found");
+		}
+
+		return data[0];
 	},
 };
