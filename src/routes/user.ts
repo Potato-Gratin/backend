@@ -7,4 +7,4 @@ userRouter.post("/", UserController.createUser);
 userRouter.post("/:id", UserController.findById);
 userRouter.get("/:displayId", UserController.findByDisplayId);
 
-export default userRouter;
+
