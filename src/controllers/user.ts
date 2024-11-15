@@ -49,7 +49,7 @@ export const UserController = {
 		try {
 			const { id } = req.params;
 
-			const user = await UserModel.findByDisplayId(id);
+			const user = await UserModel.findById(id);
 
 			if (!user) {
 				res.status(404).json({ message: "User not found" });
