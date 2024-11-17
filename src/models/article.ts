@@ -26,6 +26,8 @@ export const ArticleModel = {
 			.eq("id", id);
 
 		if (error) {
+			console.log(error);
+			
 			throw new Error(`Database Error: ${error.message}`);
 		}
 
