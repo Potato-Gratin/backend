@@ -6,11 +6,15 @@ let testUserId: string;
 
 describe("ArticleModel", () => {
 	beforeAll(async () => {
-		const { data, error } = await supabase.from("user").insert({
-			display_id: "test_display_id",
-			name: "test_name",
-			description: "test_description",
-		}).select("*").single();
+		const { data, error } = await supabase
+			.from("user")
+			.insert({
+				display_id: "test_display_id",
+				name: "test_name",
+				description: "test_description",
+			})
+			.select("*")
+			.single();
 
 		if (error) {
 			throw new Error(error.message);
@@ -24,13 +28,17 @@ describe("ArticleModel", () => {
 
 	beforeEach(async () => {
 		await supabase.from("article").delete().eq("id", testArticleId);
-		const { data, error } = await supabase.from("article").insert({
-			title: "test_title",
-			content: "test_content",
-			published_at: null,
-			is_public: false,
-			user_id: testUserId,
-		}).select("*").single();
+		const { data, error } = await supabase
+			.from("article")
+			.insert({
+				title: "test_title",
+				content: "test_content",
+				published_at: null,
+				is_public: false,
+				user_id: testUserId,
+			})
+			.select("*")
+			.single();
 
 		if (error) {
 			throw new Error(error.message);

@@ -27,7 +27,7 @@ export const ArticleModel = {
 
 		if (error) {
 			console.log(error);
-			
+
 			throw new Error(`Database Error: ${error.message}`);
 		}
 
