@@ -3,8 +3,8 @@ export type ReviewVote = {
   article_id: string;
   user_id: string;
   score: number;
-  created_at: Date;
-  updated_at: Date;
+  created_at?: Date;
+  updated_at?: Date;
 };
 
 const testReviewVotes: ReviewVote[] = [

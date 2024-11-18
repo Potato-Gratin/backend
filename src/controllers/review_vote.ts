@@ -8,7 +8,8 @@ export const ReviewVoteController = {
       (vote) => vote.article_id === articleId && vote.review_id === parseInt(reviewId)
     );
     if (votes.length === 0) {
-      return res.status(404).send("Not Found");
+      res.status(404).send("Not Found");
+      return
     }
     const score = votes.reduce((total, vote) => total + vote.score, 0);
     res.json({ score });
