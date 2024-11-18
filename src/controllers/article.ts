@@ -50,7 +50,7 @@ export const ArticleController = {
 					res.status(400).json({ message: "Invalid update data" }); // 400 Bad Request
 					return;
 				}
-				res.status(500).json({ message: `Unexpected error: ${error.message}` });
+        res.status(500).json({ message: `Internal Server Error` });
 			} else {
 				res
 					.status(500)
