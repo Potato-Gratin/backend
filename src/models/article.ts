@@ -51,19 +51,19 @@ export const ArticleModel = {
 			.eq("id", id)
 			.select();
 
-			if (error) {
-				switch (error.code) {
-					case "23502":
-						throw new Error("Missing required fields"); // 必須フィールドエラー
-					default:
-						throw new Error(`Database Error: ${error.message}`);
-				}
+		if (error) {
+			switch (error.code) {
+				case "23502":
+					throw new Error("Missing required fields"); // 必須フィールドエラー
+				default:
+					throw new Error(`Database Error: ${error.message}`);
 			}
-	
-			if (!data) {
-				throw new Error("Article not found");
-			}
-	
-			return data[0];
-		},
-	};
+		}
+
+		if (!data) {
+			throw new Error("Article not found");
+		}
+
+		return data[0];
+	},
+};

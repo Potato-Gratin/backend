@@ -19,7 +19,11 @@ export const ArticleController = {
 				res.status(200).json(article);
 			}
 		} catch (error) {
-			res.status(500).json({ message: "Failed to retrieve the article. Please try again later." });
+			res
+				.status(500)
+				.json({
+					message: "Failed to retrieve the article. Please try again later.",
+				});
 		}
 	},
 
@@ -48,7 +52,11 @@ export const ArticleController = {
 				}
 				res.status(500).json({ message: `Unexpected error: ${error.message}` });
 			} else {
-				res.status(500).json({ message: "An unknown error occurred while updating the article." });
+				res
+					.status(500)
+					.json({
+						message: "An unknown error occurred while updating the article.",
+					});
 			}
 		}
 	},
