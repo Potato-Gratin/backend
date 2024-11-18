@@ -1,5 +1,5 @@
 import express from "express";
-import { getBadgeFlames, getBadgeFlameById } from "../controllers/badge_flame";
+import { getBadgeFlameById, getBadgeFlames } from "../controllers/badge_flame";
 
 export const badgeFlameRouter = express.Router();
 

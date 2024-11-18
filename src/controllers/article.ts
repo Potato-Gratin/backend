@@ -16,7 +16,7 @@ export const ArticleController = {
 		} catch (error) {
 			res.status(500).json({ message: "Internal Server Error" });
 		}
-  },
+	},
 
 	create: async (req: Request, res: Response) => {
 		try {
@@ -29,18 +29,20 @@ export const ArticleController = {
 	},
 	search: async (req: Request, res: Response) => {
 		try {
-      const { q, page: pageStr = "1" } = req.query;
+			const { q, page: pageStr = "1" } = req.query;
 
 			if (!q || typeof q !== "string") {
-        res.status(400).json({ message: "Query parameter 'q' is required" });
-        return
-      }
-      if (typeof pageStr !== "string") {
-        res.status(400).json({ message: "Query parameter 'page' must be a number" });
-        return
-      }
+				res.status(400).json({ message: "Query parameter 'q' is required" });
+				return;
+			}
+			if (typeof pageStr !== "string") {
+				res
+					.status(400)
+					.json({ message: "Query parameter 'page' must be a number" });
+				return;
+			}
 
-			const articles = await ArticleModel.search(q, parseInt(pageStr));
+			const articles = await ArticleModel.search(q, Number.parseInt(pageStr));
 			res.status(200).json(articles);
 		} catch (error) {
 			res.status(500).json({ message: "Internal Server Error" });
