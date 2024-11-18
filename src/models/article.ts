@@ -60,7 +60,7 @@ export const ArticleModel = {
 			}
 		}
 
-		if (!data) {
+		if (!data[0]) {
 			throw new Error("Article not found");
 		}
 
