@@ -17,7 +17,7 @@ export const ArticleController = {
 			res.status(500).json({ message: "Internal Server Error" });
 		}
   },
-  
+
 	create: async (req: Request, res: Response) => {
 		try {
 			const { title, content, user_id } = req.body;
