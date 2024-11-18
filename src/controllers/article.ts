@@ -19,11 +19,9 @@ export const ArticleController = {
 				res.status(200).json(article);
 			}
 		} catch (error) {
-			res
-				.status(500)
-				.json({
-          message: "Internal Server Error",
-				});
+			res.status(500).json({
+				message: "Internal Server Error",
+			});
 		}
 	},
 
@@ -50,13 +48,11 @@ export const ArticleController = {
 					res.status(400).json({ message: "Invalid update data" }); // 400 Bad Request
 					return;
 				}
-        res.status(500).json({ message: `Internal Server Error` });
+				res.status(500).json({ message: "Internal Server Error" });
 			} else {
-				res
-					.status(500)
-					.json({
-						message: "An unknown error occurred while updating the article.",
-					});
+				res.status(500).json({
+					message: "An unknown error occurred while updating the article.",
+				});
 			}
 		}
 	},

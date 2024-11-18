@@ -135,7 +135,7 @@ describe("ArticleController", () => {
 
 			expect(statusMock).toHaveBeenCalledWith(500);
 			expect(jsonMock).toHaveBeenCalledWith({
-        message: "Internal Server Error",
+				message: "Internal Server Error",
 			});
 		});
 	});
