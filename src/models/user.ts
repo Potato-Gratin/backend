@@ -82,7 +82,7 @@ export const UserModel = {
 	},
 
 	/**
-	 * ユーザーを作成する。
+	 * ユーザーを更新する。
 	 * @param {string} display_id 表示ID
 	 * @param {Object} updatedData 更新するユーザ情報
 	 * @returns {Promise<User>} 更新したユーザー

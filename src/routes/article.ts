@@ -3,8 +3,8 @@ import { ArticleController } from "../controllers/article";
 
 export const articleRouter = express.Router();
 
-articleRouter.get("/:id", ArticleController.findById);
-articleRouter.post("/", ArticleController.create);
 articleRouter.get("/search", ArticleController.search);
-articleRouter.patch("/:id", ArticleController.update);
+articleRouter.get("/:id", ArticleController.findById);
+articleRouter.patch("/:id", ArticleController.updateById);
+articleRouter.post("/", ArticleController.create);
 articleRouter.delete("/:id", ArticleController.delete);
