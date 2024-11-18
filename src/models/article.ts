@@ -65,6 +65,7 @@ export const ArticleModel = {
 		}
 
 		return data[0];
+	},
 
 	// TODO: 実際のDB操作に置き換える
 	create: async ({
@@ -100,4 +101,4 @@ export const ArticleModel = {
 		}
 		return null;
 	},
-};
+}

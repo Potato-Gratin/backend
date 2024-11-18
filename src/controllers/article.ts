@@ -22,7 +22,7 @@ export const ArticleController = {
 			res
 				.status(500)
 				.json({
-					message: "Failed to retrieve the article. Please try again later.",
+          message: "Internal Server Error",
 				});
 		}
 	},
