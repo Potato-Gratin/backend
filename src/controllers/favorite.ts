@@ -21,10 +21,11 @@ const createFavorite = async (req: Request, res: Response) => {
 		const article = await ArticleModel.findById(id);
 		if (!article) {
 			res.status(404).json({ message: "Article not found" });
+            return;
 		}
 
 		// 新しい「いいね」を作成
-		const newFavorite = FavoriteModel.createFavorite(user_id, id);
+		const newFavorite = await FavoriteModel.createFavorite(user_id, id);
 		res.status(201).json(newFavorite);
 	} catch (error) {
 		res.status(500).json({ message: "Failed to create favorite." });

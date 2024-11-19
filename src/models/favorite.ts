@@ -20,18 +20,7 @@ const getFavoritesByArticleId = (article_id: string) => {
 };
 
 const createFavorite = async (user_id: string, article_id: string) => {
-	// 既にそのユーザーがその記事にいいねをしているか確認
-	const existingFavorite = favorites.find(
-		(favorite) =>
-			favorite.user_id === user_id && favorite.article_id === article_id,
-	);
-
-	// すでにいいねが存在する場合は、新しいいいねを追加しない
-	if (existingFavorite) {
-		throw new Error("Favorite already exists for this article by this user.");
-	}
-
-	// Supabaseにデータを追加する処理
+	
 	const { data, error } = await supabase.from("favorite").insert([
 		{
 			user_id: user_id,
