@@ -20,7 +20,9 @@ const getFavoritesByArticleId = (article_id: string) => {
 };
 
 const createFavorite = async (user_id: string, article_id: string) => {
-	
+	//todo　既にいいねが存在してた時
+
+    
 	const { data, error } = await supabase.from("favorite").insert([
 		{
 			user_id: user_id,
