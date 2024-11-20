@@ -1,3 +1,5 @@
+import supabase from "../libs/supabase";
+
 const favorites = [
 	{
 		user_id: "user1",
@@ -45,31 +47,33 @@ export const FavoriteModel = {
 		return favorites.filter((favorite) => favorite.article_id === article_id);
 	},
 
-const addFavorite = (user_id: string, article_id: string) => {
-	const newFavorite = {
-		user_id,
-		article_id,
-		created_at: new Date(),
-		updated_at: new Date(),
-	};
-	favorites.push(newFavorite);
-	return newFavorite;
-};
+	createFavorite: async (user_id: string, article_id: string) => {
+		const { data, error } = await supabase.from("favorite").insert([
+			{
+				user_id: user_id,
+				article_id: article_id,
+				created_at: new Date().toISOString(),
+				updated_at: new Date().toISOString(),
+			},
+		]);
 
-const removeFavorite = (user_id: string, article_id: string) => {
-	const index = favorites.findIndex(
-		(favorite) =>
-			favorite.user_id === user_id && favorite.article_id === article_id,
-	);
-	if (index !== -1) {
-		return favorites.splice(index, 1)[0];
-	}
-	return null;
-};
+		//todo　既にいいねが存在してた時
+		if (error) {
+			// FIXME: いいねが重複した場合（主キー制約違反）に対応する
+			throw new Error(`Failed to create favorite: ${error.message}`);
+		}
 
-export const FavoriteModel = {
-	favorites,
-	getFavoritesByArticleId,
-	addFavorite,
-	removeFavorite,
+		return data;
+	},
+
+	removeFavorite: (user_id: string, article_id: string) => {
+		const index = favorites.findIndex(
+			(favorite) =>
+				favorite.user_id === user_id && favorite.article_id === article_id,
+		);
+		if (index !== -1) {
+			return favorites.splice(index, 1)[0];
+		}
+		return null;
+	},
 };
