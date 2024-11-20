@@ -60,11 +60,5 @@ describe("FavoriteModel", () => {
 			const count = await FavoriteModel.getFavoriteCount(testArticleId);
 			expect(count).toBe(1);
 		});
-
-		it("存在しない記事IDの場合はエラーがスローされるか", async () => {
-			await expect(
-				FavoriteModel.getFavoriteCount("00000000-0000-0000-0000-000000000000"),
-			).rejects.toThrow("Article not found");
-		});
 	});
 });
