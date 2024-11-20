@@ -74,4 +74,29 @@ describe("ArticleModel", () => {
 			expect(article).toBeNull();
 		});
 	});
+
+	describe("updateById", () => {
+		it("記事情報が正常に更新されているか", async () => {
+			const updatedArticle = await ArticleModel.updateById(testArticleId, {
+				title: "updated_title",
+				content: "updated_content",
+				is_public: true,
+			});
+			expect(updatedArticle).toMatchObject({
+				id: testArticleId,
+				title: "updated_title",
+				content: "updated_content",
+				is_public: true,
+			});
+		});
+
+		it("存在しないIDの場合はエラーがスローされるか", async () => {
+			await expect(
+				ArticleModel.updateById("00000000-0000-0000-0000-000000000000", {
+					title: "updated_title",
+					content: "updated_content",
+				}),
+			).rejects.toThrow("Article not found");
+		});
+	});
 });

@@ -26,4 +26,35 @@ export const FavoriteController = {
 			res.status(500).json({ message: "Failed to retrieve favorite count." });
 		}
 	},
+  
+  // TODO: 実装
+  getFavoriteCount: (req: Request, res: Response) => {
+    const { id } = req.params;
+    const favorites = FavoriteModel.getFavoritesByArticleId(id);
+    if (favorites) {
+      res.json({ count: favorites.length });
+    } else {
+      res.status(404).send("Article not found");
+    }
+  },
+
+  // TODO: 実装
+  addFavorite: (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { user_id } = req.body;
+    const newFavorite = FavoriteModel.addFavorite(user_id, id);
+    res.status(201).json(newFavorite);
+  },
+
+  // TODO: 実装
+  removeFavorite: (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { user_id } = req.body;
+    const removedFavorite = FavoriteModel.removeFavorite(user_id, id);
+    if (removedFavorite) {
+      res.json(removedFavorite);
+    } else {
+      res.status(404).send("Favorite not found");
+    }
+  },
 };
