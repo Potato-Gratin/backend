@@ -11,10 +11,7 @@ badgeRouter.get(
 	"/articles/:articleId/reviews/:reviewId",
 	BadgeController.getBadgesByReview,
 );
-badgeRouter.get(
-	"/receive/users/:displayId",
-	BadgeController.getReceivedBadges,
-);
+badgeRouter.get("/receive/users/:displayId", BadgeController.getReceivedBadges);
 badgeRouter.get("/send/users/:displayId", BadgeController.getSentBadges);
 
 export default badgeRouter;

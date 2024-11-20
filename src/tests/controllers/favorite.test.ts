@@ -32,30 +32,48 @@ describe("FavoriteController", () => {
 			const favoriteCount = 5;
 
 			(ArticleModel.findById as jest.Mock).mockResolvedValue(article);
-			(FavoriteModel.getFavoriteCount as jest.Mock).mockResolvedValue(favoriteCount);
+			(FavoriteModel.getFavoriteCount as jest.Mock).mockResolvedValue(
+				favoriteCount,
+			);
 
-			await FavoriteController.getFavoriteCount(req as Request, res as Response);
+			await FavoriteController.getFavoriteCount(
+				req as Request,
+				res as Response,
+			);
 
 			expect(statusMock).toHaveBeenCalledWith(200);
-			expect(jsonMock).toHaveBeenCalledWith({ articleId: "testArticleId", favoriteCount });
+			expect(jsonMock).toHaveBeenCalledWith({
+				articleId: "testArticleId",
+				favoriteCount,
+			});
 		});
 
 		it("記事が見つからない場合、404 Not Found を返すか", async () => {
 			(ArticleModel.findById as jest.Mock).mockResolvedValue(null);
 
-			await FavoriteController.getFavoriteCount(req as Request, res as Response);
+			await FavoriteController.getFavoriteCount(
+				req as Request,
+				res as Response,
+			);
 
 			expect(statusMock).toHaveBeenCalledWith(404);
 			expect(jsonMock).toHaveBeenCalledWith({ message: "Article not found" });
 		});
 
 		it("サーバーエラーが発生した場合、500 Internal Server Error を返すか", async () => {
-			(ArticleModel.findById as jest.Mock).mockRejectedValue(new Error("some other error"));
+			(ArticleModel.findById as jest.Mock).mockRejectedValue(
+				new Error("some other error"),
+			);
 
-			await FavoriteController.getFavoriteCount(req as Request, res as Response);
+			await FavoriteController.getFavoriteCount(
+				req as Request,
+				res as Response,
+			);
 
 			expect(statusMock).toHaveBeenCalledWith(500);
-			expect(jsonMock).toHaveBeenCalledWith({ message: "Failed to retrieve favorite count." });
+			expect(jsonMock).toHaveBeenCalledWith({
+				message: "Failed to retrieve favorite count.",
+			});
 		});
 	});
 });

@@ -19,28 +19,28 @@ describe("FavoriteModel", () => {
 		if (userError) {
 			throw new Error(userError.message);
 		}
-    testUserId = userData.id;
+		testUserId = userData.id;
 
-    const { data: articleData, error: articleError } = await supabase
-      .from("article")
-      .insert({
-        title: "test_title",
-        content: "test_content",
-        published_at: null,
-        is_public: false,
-        user_id: testUserId,
-      })
-      .select("*")
-      .single();
+		const { data: articleData, error: articleError } = await supabase
+			.from("article")
+			.insert({
+				title: "test_title",
+				content: "test_content",
+				published_at: null,
+				is_public: false,
+				user_id: testUserId,
+			})
+			.select("*")
+			.single();
 
-    if (articleError) {
-      throw new Error(articleError.message);
-    }
-    testArticleId = articleData.id;
+		if (articleError) {
+			throw new Error(articleError.message);
+		}
+		testArticleId = articleData.id;
 	});
 
-  afterAll(async () => {
-    await supabase.from("article").delete().eq("id", testArticleId);
+	afterAll(async () => {
+		await supabase.from("article").delete().eq("id", testArticleId);
 		await supabase.from("user").delete().eq("id", testUserId);
 	});
 
