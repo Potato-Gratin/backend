@@ -9,9 +9,9 @@ export const ArticleController = {
 	 */
 	findById: async (req: Request, res: Response) => {
 		try {
-			const { id } = req.params;
+			const { displayId } = req.params;
 
-			const article = await ArticleModel.findById(id);
+			const article = await ArticleModel.findById(displayId);
 
 			if (!article) {
 				res.status(404).json({ message: "Article not found" });
