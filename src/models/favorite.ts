@@ -1,4 +1,3 @@
-import supabase from "../libs/supabase";
 const favorites = [
 	{
 		user_id: "user1",
@@ -15,30 +14,46 @@ const favorites = [
 	// ...他のテストデータ...
 ];
 
-const getFavoritesByArticleId = (article_id: string) => {
-	return favorites.filter((favorite) => favorite.article_id === article_id);
-};
+export interface Favorite {
+	user_id: string;
+	article_id: string;
+	created_at: string;
+	updated_at: string;
+}
 
-const createFavorite = async (user_id: string, article_id: string) => {
-	//todo　既にいいねが存在してた時
+export const FavoriteModel = {
+	/**
+	 *指定した記事IDのいいねを取得する
+	 * @param {string} article_id 記事ID
+	 * @returns {Promise<User>} いいね数
+	 * @throws {Error} DB操作に失敗した場合
+	 */
+	getFavoriteCount: async (article_id: string): Promise<number> => {
+		const { data, error } = await supabase
+			.from("favorite")
+			.select("article_id", { count: "exact" })
+			.eq("article_id", article_id);
 
-    
-	const { data, error } = await supabase.from("favorite").insert([
-		{
-			user_id: user_id,
-			article_id: article_id,
-			created_at: new Date().toISOString(), // ISO 8601形式の文字列に変換
-			updated_at: new Date().toISOString(), // ,,
-		},
-	]);
+		if (error) {
+			throw new Error(`Failed to retrieve favorite count: ${error.message}`);
+		}
 
-	// Supabaseのエラーチェック
-	if (error) {
-		throw new Error(`Failed to create favorite: ${error.message}`);
-	}
+		return data ? data.length : 0;
+	},
 
-	// 追加したデータを返す
-	return data;
+	getFavoritesByArticleId: (article_id: string) => {
+		return favorites.filter((favorite) => favorite.article_id === article_id);
+	},
+
+const addFavorite = (user_id: string, article_id: string) => {
+	const newFavorite = {
+		user_id,
+		article_id,
+		created_at: new Date(),
+		updated_at: new Date(),
+	};
+	favorites.push(newFavorite);
+	return newFavorite;
 };
 
 const removeFavorite = (user_id: string, article_id: string) => {
@@ -55,6 +70,6 @@ const removeFavorite = (user_id: string, article_id: string) => {
 export const FavoriteModel = {
 	favorites,
 	getFavoritesByArticleId,
-	createFavorite,
+	addFavorite,
 	removeFavorite,
 };
