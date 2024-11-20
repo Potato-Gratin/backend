@@ -4,17 +4,17 @@ import { BadgeController } from "../controllers/badge";
 export const badgeRouter = express.Router();
 
 badgeRouter.post(
-	"/articles/:articleId/reviews/:reviewId/budges",
+	"/articles/:articleId/reviews/:reviewId",
 	BadgeController.addBadge,
 );
 badgeRouter.get(
-	"/articles/:articleId/reviews/:reviewId/budges",
+	"/articles/:articleId/reviews/:reviewId",
 	BadgeController.getBadgesByReview,
 );
 badgeRouter.get(
-	"/users/:displayId/budges/receive",
+	"/receive/users/:displayId",
 	BadgeController.getReceivedBadges,
 );
-badgeRouter.get("/users/:displayId/budges/send", BadgeController.getSentBadges);
+badgeRouter.get("/send/users/:displayId", BadgeController.getSentBadges);
 
 export default badgeRouter;
