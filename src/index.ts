@@ -15,7 +15,7 @@ const port = 3000;
 app.use("/users", userRouter);
 app.use("/articles", articleRouter);
 app.use("/favorites", favoriteRouter);
-app.use("/", reviewRouter);
+app.use("/reviews", reviewRouter);
 app.use("/review_votes", reviewVoteRouter);
 app.use("/badges", badgeRouter);
 app.use("/badge_flames", badgeFlameRouter);
