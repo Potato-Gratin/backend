@@ -4,7 +4,7 @@ import { ReviewController } from "../controllers/review";
 export const reviewRouter = express.Router();
 
 reviewRouter.get(
-	"/articles/:articleId/reviews",
+	"/:articlesId/reviews",
 	ReviewController.getArticleReviews,
 );
 reviewRouter.post("/articles/:articleId/reviews", ReviewController.addReview);
