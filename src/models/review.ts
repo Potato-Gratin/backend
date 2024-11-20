@@ -15,7 +15,7 @@ export const ReviewModel = {
 	getReviewsByArticleId: async (
 		articleId: string, // 取得したい記事のID
 		limit: number, // 1ページあたりのデータ件数
-		offset: number // 開始位置（スキップする行数）
+		offset: number, // 開始位置（スキップする行数）
 	) => {
 		const { data, error } = await supabase
 			.from("review") // "reviews" テーブルを指定
@@ -23,12 +23,12 @@ export const ReviewModel = {
 			.eq("article_id", articleId) // 指定された articleId に一致するデータをフィルタリング
 			.order("created_at", { ascending: false }) // 作成日時で降順ソート
 			.range(offset, offset + limit - 1); // 範囲を指定してデータ取得
-	
+
 		// エラーチェック
 		if (error) {
 			throw new Error(`Failed to fetch reviews: ${error.message}`);
 		}
-	
+
 		// レビューリストを返す
 		return data;
 	},

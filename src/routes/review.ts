@@ -3,10 +3,7 @@ import { ReviewController } from "../controllers/review";
 
 export const reviewRouter = express.Router();
 
-reviewRouter.get(
-	"/:articlesId/reviews",
-	ReviewController.getArticleReviews,
-);
+reviewRouter.get("/:articlesId/reviews", ReviewController.getArticleReviews);
 reviewRouter.post("/articles/:articleId/reviews", ReviewController.addReview);
 reviewRouter.get("/users/:displayId/reviews", ReviewController.getUserReviews);
 reviewRouter.delete(
