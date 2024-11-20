@@ -1,20 +1,20 @@
 import express from "express";
 import { BadgeController } from "../controllers/badge";
 
-const router = express.Router();
+export const badgeRouter = express.Router();
 
-router.post(
+badgeRouter.post(
 	"/articles/:articleId/reviews/:reviewId/budges",
 	BadgeController.addBadge,
 );
-router.get(
+badgeRouter.get(
 	"/articles/:articleId/reviews/:reviewId/budges",
 	BadgeController.getBadgesByReview,
 );
-router.get(
+badgeRouter.get(
 	"/users/:displayId/budges/receive",
 	BadgeController.getReceivedBadges,
 );
-router.get("/users/:displayId/budges/send", BadgeController.getSentBadges);
+badgeRouter.get("/users/:displayId/budges/send", BadgeController.getSentBadges);
 
-export default router;
+export default badgeRouter;
