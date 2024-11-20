@@ -4,14 +4,14 @@ import { ReviewVoteController } from "../controllers/review_vote";
 export const reviewVoteRouter = express.Router();
 
 reviewVoteRouter.get(
-	"/articles/:articleId/reviews/:reviewId/review_votes/score",
+	"/score/articles/:articleId/reviews/:reviewId",
 	ReviewVoteController.getScore,
 );
 reviewVoteRouter.put(
-	"/articles/:articleId/reviews/:reviewId/review_votes",
+	"/articles/:articleId/reviews/:reviewId",
 	ReviewVoteController.addOrUpdateVote,
 );
 reviewVoteRouter.delete(
-	"/articles/:articleId/reviews/:reviewId/users/:userId/review_votes",
+	"/articles/:articleId/reviews/:reviewId/users/:userId",
 	ReviewVoteController.deleteVote,
 );

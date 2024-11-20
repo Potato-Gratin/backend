@@ -3,6 +3,6 @@ import { FavoriteController } from "../controllers/favorite";
 
 export const favoriteRouter = express.Router();
 
-favoriteRouter.get("/:id/count", FavoriteController.getFavoriteCount);
-favoriteRouter.post("/:id", FavoriteController.addFavorite);
-favoriteRouter.delete("/:id", FavoriteController.removeFavorite);
+favoriteRouter.get("/count", FavoriteController.getFavoriteCount);
+favoriteRouter.post("/", FavoriteController.addFavorite);
+favoriteRouter.delete("/", FavoriteController.removeFavorite);
