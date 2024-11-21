@@ -5,7 +5,7 @@ export const reviewVoteRouter = express.Router();
 
 reviewVoteRouter.get(
 	"/score/articles/:articleId/reviews/:reviewId",
-	ReviewVoteController.getScore,
+	ReviewVoteController.getReviewScore,
 );
 reviewVoteRouter.put(
 	"/articles/:articleId/reviews/:reviewId",
