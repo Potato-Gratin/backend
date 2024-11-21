@@ -27,10 +27,10 @@ export const ReviewModel = {
 			parent_article_id: null,
 		};
 	},
-	getReviewsByDisplayId:async (
+	getReviewsByDisplayId: async (
 		displayId: string, // 取得したいユーザーのdisplayID
 		limit: number, // 1ページあたりのデータ件数
-		offset: number // 開始位置（スキップする行数）
+		offset: number, // 開始位置（スキップする行数）
 	) => {
 		const { data, error } = await supabase
 			.from("review") // "reviews" テーブルを指定

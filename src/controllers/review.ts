@@ -16,13 +16,17 @@ export const ReviewController = {
 	},
 	getUserReviews: async (req: Request, res: Response) => {
 		const { displayId } = req.params;
-		const page = parseInt(req.query.page as string) || 1;
+		const page = Number.parseInt(req.query.page as string) || 1;
 		const limit = 10; // 1ページ当たりの件数
 		const offset = (page - 1) * limit; // オフセット計算
 
 		try {
 			// モデルでレビュー情報を取得
-			const reviews = await ReviewModel.getReviewsByDisplayId(displayId, limit, offset);
+			const reviews = await ReviewModel.getReviewsByDisplayId(
+				displayId,
+				limit,
+				offset,
+			);
 
 			res.status(200).json(reviews);
 		} catch (error) {
