@@ -27,15 +27,15 @@ export const ReviewModel = {
 			parent_article_id: null,
 		};
 	},
-	getReviewsByDisplayId: async (
-		displayId: string, // 取得したいユーザーのdisplayID
+	getReviewsByUserId: async (
+		userId: string, // 取得したいユーザーのuserID
 		limit: number, // 1ページあたりのデータ件数
 		offset: number, // 開始位置（スキップする行数）
 	) => {
 		const { data, error } = await supabase
 			.from("review") // "reviews" テーブルを指定
 			.select("*") // 全カラムを取得
-			.eq("display_id", displayId) // 指定された displayId に一致するデータをフィルタリング
+			.eq("user_id", userId) // 指定された displayId に一致するデータをフィルタリング
 			.order("created_at", { ascending: false }) // 作成日時で降順ソート
 			.range(offset, offset + limit - 1); // 範囲を指定してデータ取得
 
