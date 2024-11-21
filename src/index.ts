@@ -10,7 +10,7 @@ import "dotenv/config";
 
 import express from "express";
 const app: express.Express = express();
-const port = 3000;
+const port = 5000;
 
 app.use("/users", userRouter);
 app.use("/articles", articleRouter);
