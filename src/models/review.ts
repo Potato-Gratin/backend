@@ -50,6 +50,6 @@ export const ReviewModel = {
 				throw new Error(`Failed to delete review: ${error.message}`);
 			}
 	
-			return data;
+			return data || [];
 	},
 };
