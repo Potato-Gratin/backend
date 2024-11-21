@@ -3,6 +3,33 @@ import { ArticleModel } from "../models/article";
 
 export const ArticleController = {
 	/**
+	 * 記事を新しい順に取得する。
+	 * クエリパラメータとして page が与えられる場合はそのページを、
+	 * 与えられない場合は 1 ページ目を取得する。
+	 * １ページは10件に相当する。
+	 * @param req
+	 * @param res
+	*/
+	findAll: async (req: Request, res: Response) => {
+		try {
+			const { page: pageStr = "1" } = req.query;
+
+			if (typeof pageStr !== "string") {
+				res
+					.status(400)
+					.json({ message: "Query parameter 'page' must be a number" });
+				return;
+			}
+
+			const articles = await ArticleModel.findAll(parseInt(pageStr));
+			res.status(200).json(articles);
+		} catch (error) {
+			res.status(500).json({ message: "Internal Server Error" });
+		}
+	},
+
+
+	/**
 	 * 記事をIDで検索する
 	 * @param req
 	 * @param res
