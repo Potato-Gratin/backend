@@ -1,3 +1,5 @@
+import supabase from "../libs/supabase";
+
 export const ReviewModel = {
 	getArticleReviews: (articleId: string, page = 1) => {
 		// テストデータを返す
@@ -38,8 +40,16 @@ export const ReviewModel = {
 			parent_article_id: null,
 		});
 	},
-	deleteReview: (articleId: string, reviewId: string) => {
-		// テストデータを返す
-		return { success: true };
+	deleteReview: async (articleId: string, reviewId: string) => {
+		const { data, error } = await supabase
+			.from("review")
+			.delete()
+			.match({ article_id: articleId, id: reviewId});
+
+			if (error) {
+				throw new Error(`Failed to delete review: ${error.message}`);
+			}
+	
+			return data;
 	},
 };
