@@ -44,12 +44,12 @@ export const ReviewModel = {
 		const { data, error } = await supabase
 			.from("review")
 			.delete()
-			.match({ article_id: articleId, id: reviewId});
+			.match({ article_id: articleId, id: reviewId });
 
-			if (error) {
-				throw new Error(`Failed to delete review: ${error.message}`);
-			}
-	
-			return data || [];
+		if (error) {
+			throw new Error(`Failed to delete review: ${error.message}`);
+		}
+
+		return data || [];
 	},
 };

@@ -21,7 +21,7 @@ export const ReviewController = {
 	},
 	deleteReview: async (req: Request, res: Response) => {
 		const { articleId, reviewId } = req.params;
-		
+
 		try {
 			// モデル層を呼び出して削除
 			const deletedReview = await ReviewModel.deleteReview(articleId, reviewId);
