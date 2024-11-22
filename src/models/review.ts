@@ -1,3 +1,14 @@
+export interface User {
+	id: string;
+	article_id: string;
+	content: string;
+	created_at: string;
+	updated_at: string;
+	user_id: string;
+	parent_review_id: string | null;
+	parent_article_id: string | null;
+}
+
 export const ReviewModel = {
 	getArticleReviews: (articleId: string, page = 1) => {
 		// テストデータを返す
@@ -13,17 +24,7 @@ export const ReviewModel = {
 		});
 	},
 	addReview: (articleId: string, content: string, userId: string) => {
-		// テストデータを返す
-		return {
-			id: "new-review-id",
-			article_id: articleId,
-			content: content,
-			created_at: new Date(),
-			updated_at: new Date(),
-			user_id: userId,
-			parent_review_id: null,
-			parent_article_id: null,
-		};
+		
 	},
 	getUserReviews: (displayId: string) => {
 		// テストデータを返す
