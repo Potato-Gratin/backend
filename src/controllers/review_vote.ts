@@ -11,9 +11,10 @@ export const ReviewVoteController = {
 
             if (totalScore === null) {
                 // 記事かレビューが存在しない場合
-                return res.status(404).json({
+                res.status(404).json({
                     message: `Article with ID ${articleId} or Review with ID ${reviewId} not found.`,
                 });
+				return;
             }
 
             res.status(200).json({ reviewId, articleId, score: totalScore });
