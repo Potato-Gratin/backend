@@ -103,7 +103,7 @@ export const ArticleModel = {
 		const { data, error } = await supabase
 			.from("article")
 			.select("*")
-			.textSearch("title", q)
+			.ilike("title", `%${q}%`)
 			.range((page - 1) * 10, page * 10 - 1);
 
 		if (error) {

@@ -111,7 +111,7 @@ export const ArticleController = {
 			const articles = await ArticleModel.search(q, Number.parseInt(pageStr));
 			res.status(200).json(articles);
 		} catch (error) {
-			res.status(500).json({ message: "Internal Server Error" });
+			res.status(500).json({ message: "Internal Server Error: " });
 		}
 	},
 	update: async (req: Request, res: Response) => {
