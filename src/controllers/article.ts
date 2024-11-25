@@ -35,7 +35,7 @@ export const ArticleController = {
 	 * @param res
 	 */
 	findById: async (req: Request, res: Response) => {
-		try {
+	try {
 			const { displayId } = req.params;
 
 			const article = await ArticleModel.findById(displayId);

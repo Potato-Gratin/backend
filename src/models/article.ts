@@ -98,15 +98,21 @@ export const ArticleModel = {
 		return newArticle;
 	},
 
-	// TODO: 実際のDB操作に置き換える
+
 	search: async (q: string, page: number) => {
-		const articles = [
-			{ id: "1", title: "Title 1", content: "Content 1", user_id: "user1" },
-			{ id: "2", title: "Title 2", content: "Content 2", user_id: "user2" },
-		];
-		return articles
-			.filter((article) => article.title.includes(q))
-			.slice((page - 1) * 30, page * 30);
+		const { data, error } = await supabase
+			.from("article")
+			.select("*")
+			.textSearch("title", q)
+			.range((page - 1) * 10, page * 10 - 1);
+
+		if (error) {
+			console.log(error);
+
+			throw new Error(`Database Error: ${error.message}`);
+		}
+
+		return data;
 	},
 
 	deleteById: async (id: string) => {
