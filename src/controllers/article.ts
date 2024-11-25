@@ -9,7 +9,7 @@ export const ArticleController = {
 	 * １ページは10件に相当する。
 	 * @param req
 	 * @param res
-	*/
+	 */
 	findAll: async (req: Request, res: Response) => {
 		try {
 			const { page: pageStr = "1" } = req.query;
@@ -21,13 +21,12 @@ export const ArticleController = {
 				return;
 			}
 
-			const articles = await ArticleModel.findAll(parseInt(pageStr));
+			const articles = await ArticleModel.findAll(Number.parseInt(pageStr));
 			res.status(200).json(articles);
 		} catch (error) {
 			res.status(500).json({ message: "Internal Server Error" });
 		}
 	},
-
 
 	/**
 	 * 記事をIDで検索する
@@ -35,7 +34,7 @@ export const ArticleController = {
 	 * @param res
 	 */
 	findById: async (req: Request, res: Response) => {
-	try {
+		try {
 			const { displayId } = req.params;
 
 			const article = await ArticleModel.findById(displayId);

@@ -17,7 +17,7 @@ export const ArticleModel = {
 	 * 記事を新しい順に取得する。
 	 * @returns {Promise<Article[]>} 記事一覧
 	 * @throws {Error} DB操作に失敗した場合
-	*/
+	 */
 	findAll: async (page: number): Promise<Article[]> => {
 		const { data, error } = await supabase
 			.from("article")
@@ -97,7 +97,6 @@ export const ArticleModel = {
 		const newArticle = { id: "3", title, content, user_id };
 		return newArticle;
 	},
-
 
 	search: async (q: string, page: number) => {
 		const { data, error } = await supabase
