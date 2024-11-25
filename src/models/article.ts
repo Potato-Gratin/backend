@@ -14,6 +14,27 @@ export interface Article {
 
 export const ArticleModel = {
 	/**
+	 * 記事を新しい順に取得する。
+	 * @returns {Promise<Article[]>} 記事一覧
+	 * @throws {Error} DB操作に失敗した場合
+	 */
+	findAll: async (page: number): Promise<Article[]> => {
+		const { data, error } = await supabase
+			.from("article")
+			.select("*")
+			.order("created_at", { ascending: false })
+			.range((page - 1) * 10, page * 10 - 1);
+
+		if (error) {
+			console.log(error);
+
+			throw new Error(`Database Error: ${error.message}`);
+		}
+
+		return data;
+	},
+
+	/**
 	 * 指定したIDの記事を検索する。
 	 * @param {string} id 記事のID
 	 * @returns {Promise<Article | null>} 見つかった記事、または null
@@ -77,15 +98,20 @@ export const ArticleModel = {
 		return newArticle;
 	},
 
-	// TODO: 実際のDB操作に置き換える
 	search: async (q: string, page: number) => {
-		const articles = [
-			{ id: "1", title: "Title 1", content: "Content 1", user_id: "user1" },
-			{ id: "2", title: "Title 2", content: "Content 2", user_id: "user2" },
-		];
-		return articles
-			.filter((article) => article.title.includes(q))
-			.slice((page - 1) * 30, page * 30);
+		const { data, error } = await supabase
+			.from("article")
+			.select("*")
+			.ilike("title", `%${q}%`)
+			.range((page - 1) * 10, page * 10 - 1);
+
+		if (error) {
+			console.log(error);
+
+			throw new Error(`Database Error: ${error.message}`);
+		}
+
+		return data;
 	},
 
 	deleteById: async (id: string) => {

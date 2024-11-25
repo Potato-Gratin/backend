@@ -21,11 +21,13 @@
 	"license": "MIT",
 	"dependencies": {
 		"@supabase/supabase-js": "^2.46.1",
+		"cors": "^2.8.5",
 		"express": "^4.21.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
 		"@dotenvx/dotenvx": "^1.21.0",
+		"@types/cors": "^2.8.17",
 		"@types/express": "^5.0.0",
 		"@types/jest": "^29.5.14",
 		"@types/supertest": "^6.0.2",
