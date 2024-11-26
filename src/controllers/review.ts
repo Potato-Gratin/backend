@@ -8,12 +8,31 @@ export const ReviewController = {
 		const reviews = ReviewModel.getArticleReviews(articleId, page);
 		res.json(reviews);
 	},
-	addReview: (req: Request, res: Response) => {
-		const { articleId } = req.params;
-		const { content, userId } = req.body;
-		const newReview = ReviewModel.addReview(articleId, content, userId);
-		res.status(201).json(newReview);
-	},
+	addReview: async (req: Request, res: Response) => {
+		const { content, user_id, parent_review_id } = req.body;
+		const { article_id } = req.params; 
+	
+		// 必要なパラメータが不足していないか確認
+		if (!article_id || !content || !user_id) {
+		  return res.status(400).json({
+			error: "Missing required fields: articleId, content, or user_id.",
+		  });
+		}
+		
+		try {
+		  // addReview メソッドを実行
+		  const newReview = await ReviewModel.addReview(article_id, content, user_id, parent_review_id);
+	
+		  // 成功時に新しいレビュー情報を返す
+		  return res.status(201).json(newReview);
+		} catch (error) {
+		  // エラー時に詳細を返す
+		  console.error("Error adding review:");
+		  return res.status(500).json({
+			error: "Failed to add review.",
+		  });
+		}
+	  },
 	getUserReviews: (req: Request, res: Response) => {
 		const { displayId } = req.params;
 		const reviews = ReviewModel.getUserReviews(displayId);
