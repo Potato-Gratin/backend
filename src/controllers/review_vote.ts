@@ -2,19 +2,31 @@ import type { Request, Response } from "express";
 import { ReviewVoteModel } from "../models/review_vote";
 
 export const ReviewVoteController = {
-	getScore: (req: Request, res: Response) => {
-		const { articleId, reviewId } = req.params;
-		const votes = ReviewVoteModel.getReviewVotes().filter(
-			(vote) =>
-				vote.article_id === articleId &&
-				vote.review_id === Number.parseInt(reviewId),
-		);
-		if (votes.length === 0) {
-			res.status(404).send("Not Found");
-			return;
+	getReviewScore: async (req: Request, res: Response) => {
+		const { reviewId, articleId } = req.params;
+
+		try {
+			// モデルからスコア合計を取得
+			const totalScore = await ReviewVoteModel.getReviewScore(
+				reviewId,
+				articleId,
+			);
+
+			if (totalScore === null) {
+				// 記事かレビューが存在しない場合
+				res.status(404).json({
+					message:
+						"Article with ID ${articleId} or Review with ID ${reviewId} not found.",
+				});
+				return;
+			}
+
+			res.status(200).json({ reviewId, articleId, score: totalScore });
+		} catch (error) {
+			res.status(500).json({
+				message: "Failed to fetch review score",
+			});
 		}
-		const score = votes.reduce((total, vote) => total + vote.score, 0);
-		res.json({ score });
 	},
 	addOrUpdateVote: (req: Request, res: Response) => {
 		const { articleId, reviewId } = req.params;
