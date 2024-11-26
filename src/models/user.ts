@@ -43,6 +43,27 @@ export const UserModel = {
 		return data;
 	},
 
+	/**
+	 * ユーザーを検索する。
+	 * @param {string} q 検索クエリ
+	 * @param {number} page ページ番号
+	 * @returns {Promise<User[]>} 検索結果
+	 * @throws {Error} DB操作に失敗した場合
+	 */
+	search: async (q: string, page: number): Promise<User[]> => {
+		const { data, error } = await supabase
+			.from("user")
+			.select("*")
+			.textSearch("name", q)
+			.range((page - 1) * 10, page * 10 - 1);
+
+		if (error) {
+			throw new Error(`Database Error: ${error.message}`);
+		}
+
+		return data || [];
+	},
+
 	findById: async (id: string): Promise<User | null> => {
 		/**
 		 * 指定した表示IDのユーザーを検索する。
