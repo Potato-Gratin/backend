@@ -54,7 +54,7 @@ export const UserModel = {
 		const { data, error } = await supabase
 			.from("user")
 			.select("*")
-			.textSearch("name", q)
+			.ilike("name", `%${q}%`)
 			.range((page - 1) * 10, page * 10 - 1);
 
 		if (error) {
