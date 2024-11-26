@@ -60,7 +60,7 @@ export const UserController = {
 				return;
 			}
 
-			const users = await UserModel.search(q, parseInt(pageStr, 10));
+			const users = await UserModel.search(q, Number.parseInt(pageStr, 10));
 			res.status(200).json(users);
 		} catch (error) {
 			res.status(500).json({ message: "Internal Server Error: " });
