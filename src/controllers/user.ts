@@ -45,6 +45,28 @@ export const UserController = {
 		}
 	},
 
+	search: async (req: Request, res: Response) => {
+		try {
+			const { q, page: pageStr = "1" } = req.query;
+
+			if (!q || typeof q !== "string") {
+				res.status(400).json({ message: "Query parameter 'q' is required" });
+				return;
+			}
+			if (typeof pageStr !== "string") {
+				res
+					.status(400)
+					.json({ message: "Query parameter 'page' must be a number" });
+				return;
+			}
+
+			const users = await UserModel.search(q, parseInt(pageStr, 10));
+			res.status(200).json(users);
+		} catch (error) {
+			res.status(500).json({ message: "Internal Server Error: " });
+		}
+	},
+
 	findById: async (req: Request, res: Response) => {
 		try {
 			const { id } = req.params;
