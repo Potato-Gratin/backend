@@ -114,17 +114,19 @@ export const ArticleModel = {
 		return data;
 	},
 
-	deleteById: async (id: string) => {
-		// TODO: 実際のDB操作に置き換える
-		const articles = [
-			{ id: "1", title: "Title 1", content: "Content 1", user_id: "user1" },
-			{ id: "2", title: "Title 2", content: "Content 2", user_id: "user2" },
-		];
-		const index = articles.findIndex((article) => article.id === id);
-		if (index !== -1) {
-			const [deletedArticle] = articles.splice(index, 1);
-			return deletedArticle;
-		}
-		return null;
-	},
+  /**
+   * 指定されたIDの記事を削除
+   * @param {string} id - 削除対象の記事ID
+   * @returns {Promise<void>} - 成功時はvoid、失敗時は例外をスロー
+   */
+	deleteById: async (id: string): Promise<void> => {
+		const { error } = await supabase
+		.from("article")
+		.delete()
+		.eq("id", id);
+
+		if (error) {
+			throw new Error(`Failed to delete article with ID ${id}: ${error.message}`);
+		  }
+	}
 };
