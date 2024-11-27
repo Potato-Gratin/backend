@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { ReviewModel } from "../models/review";
+import { ArticleModel } from "../models/article";
 
 export const ReviewController = {
 	getArticleReviews: (req: Request, res: Response) => {
@@ -11,15 +12,15 @@ export const ReviewController = {
 	addReview: async (req: Request, res: Response) => {
 		const { content, user_id, parent_review_id } = req.body;
 		const { article_id } = req.params; 
-	
-		// 必要なパラメータが不足していないか確認
-		if (!article_id || !content || !user_id) {
-		  return res.status(400).json({
-			error: "Missing required fields: articleId, content, or user_id.",
-		  });
-		}
-		
+
 		try {
+			// 記事が存在するか確認 (controllers/article の findById を使用)
+			const article = await ArticleModel.findById(article_id);
+			if (!article) {
+			  return res.status(404).json({
+				error: `Article with ID ${article_id} not found.`,
+			  });
+			}
 		  // addReview メソッドを実行
 		  const newReview = await ReviewModel.addReview(article_id, content, user_id, parent_review_id);
 	
