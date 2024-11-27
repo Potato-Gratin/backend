@@ -17,7 +17,7 @@ export const ReviewController = {
 			// 記事が存在するか確認 (controllers/article の findById を使用)
 			const article = await ArticleModel.findById(article_id);
 			if (!article) {
-			  return res.status(404).json({
+			   res.status(404).json({
 				error: `Article with ID ${article_id} not found.`,
 			  });
 			}
@@ -25,11 +25,9 @@ export const ReviewController = {
 		  const newReview = await ReviewModel.addReview(article_id, content, user_id, parent_review_id);
 	
 		  // 成功時に新しいレビュー情報を返す
-		  return res.status(201).json(newReview);
+		  res.status(201).json(newReview);
 		} catch (error) {
-		  // エラー時に詳細を返す
-		  console.error("Error adding review:");
-		  return res.status(500).json({
+		   res.status(500).json({
 			error: "Failed to add review.",
 		  });
 		}
