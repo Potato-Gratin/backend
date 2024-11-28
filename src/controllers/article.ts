@@ -131,31 +131,30 @@ export const ArticleController = {
 
 		if (!id) {
 			res.status(400).json({
-			  error: "Article ID is required.",
+				error: "Article ID is required.",
 			});
-		  }
+		}
 
-		  try {
+		try {
 			// 記事が存在するか確認
 			const article = await ArticleModel.findById(id);
 			if (!article) {
-			  res.status(400).json({
-				error: `Article with ID ${id} does not exist.`,
-			  });
+				res.status(400).json({
+					error: `Article with ID ${id} does not exist.`,
+				});
 			}
-		
-		
+
 			await ArticleModel.deleteById(id);
-		
+
 			// 成功時のレスポンス
 			res.status(200).json({
-			  message: `Article with ID ${id} has been successfully deleted.`,
-			  deletedArticle: article, 
+				message: `Article with ID ${id} has been successfully deleted.`,
+				deletedArticle: article,
 			});
-		  } catch (error) {
+		} catch (error) {
 			res.status(500).json({
-			  error: "Failed to delete the article.",
+				error: "Failed to delete the article.",
 			});
-		  }
 		}
-	}
+	},
+};

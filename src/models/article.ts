@@ -114,19 +114,18 @@ export const ArticleModel = {
 		return data;
 	},
 
-  /**
-   * 指定されたIDの記事を削除
-   * @param {string} id - 削除対象の記事ID
-   * @returns {Promise<void>} - 成功時はvoid、失敗時は例外をスロー
-   */
+	/**
+	 * 指定されたIDの記事を削除
+	 * @param {string} id - 削除対象の記事ID
+	 * @returns {Promise<void>} - 成功時はvoid、失敗時は例外をスロー
+	 */
 	deleteById: async (id: string): Promise<void> => {
-		const { error } = await supabase
-		.from("article")
-		.delete()
-		.eq("id", id);
+		const { error } = await supabase.from("article").delete().eq("id", id);
 
 		if (error) {
-			throw new Error(`Failed to delete article with ID ${id}: ${error.message}`);
-		  }
-	}
+			throw new Error(
+				`Failed to delete article with ID ${id}: ${error.message}`,
+			);
+		}
+	},
 };
