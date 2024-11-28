@@ -21,20 +21,20 @@ describe("UserModel", () => {
 		it("ユーザーが正常に追加されているか", async () => {
 			try {
 				const user = await UserModel.create(
-					"hoge",
-					"test_name",
-					"test_description",
+					"new_display_id",
+					"new_name",
+					"new_description",
 				);
 				expect(user).toMatchObject({
-					display_id: "hoge",
-					name: "test_name",
-					description: "test_description",
+					display_id: "new_display_id",
+					name: "new_name",
+					description: "new_description",
 				});
 				expect(user).toHaveProperty("id");
 				expect(user).toHaveProperty("created_at");
 				expect(user).toHaveProperty("updated_at");
 			} finally {
-				await supabase.from("user").delete().eq("display_id", "hoge");
+				await supabase.from("user").delete().eq("display_id", "new_display_id");
 			}
 		});
 
@@ -79,6 +79,44 @@ describe("UserModel", () => {
 		it("存在しない表示IDの場合は null が返されるか", async () => {
 			const user = await UserModel.findByDisplayId("non_existent_display_id");
 			expect(user).toBeNull();
+		});
+	});
+
+	describe("updateByDisplayId", () => {
+		it("ユーザー情報が正常に更新されているか", async () => {
+			const updatedUser = await UserModel.updateByDisplayId(testDisplayId, {
+				name: "updated_name",
+				description: "updated_description",
+			});
+			expect(updatedUser).toMatchObject({
+				display_id: testDisplayId,
+				name: "updated_name",
+				description: "updated_description",
+			});
+		});
+
+		it("更新後の表示IDが重複した場合は 409 conflict が返されるか", async () => {
+			const duplicatedDisplayId = "duplicated_display_id";
+
+			try {
+				await supabase.from("user").insert({
+					display_id: duplicatedDisplayId,
+					name: "new_name",
+					description: "new_description",
+				});
+				await expect(
+					UserModel.updateByDisplayId(testDisplayId, {
+						display_id: duplicatedDisplayId,
+						name: "test_name",
+						description: "test_description",
+					}),
+				).rejects.toThrow("displayId is conflicted");
+			} finally {
+				await supabase
+					.from("user")
+					.delete()
+					.eq("display_id", duplicatedDisplayId);
+			}
 		});
 	});
 });

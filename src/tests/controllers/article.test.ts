@@ -1,95 +1,142 @@
 import type { Request, Response } from "express";
 import { ArticleController } from "../../controllers/article";
 import { ArticleModel } from "../../models/article";
-import { UserModel } from "../../models/user";
-import supabase from "../../libs/supabase";
 
 jest.mock("../../models/article");
-jest.mock("../../models/user");
-
-let testUserId: string;
 
 describe("ArticleController", () => {
-  describe("createArticle", () => {
-    let req: Partial<Request>;
-    let res: Partial<Response>;
-    let statusMock: jest.Mock;
-    let jsonMock: jest.Mock;
+	describe("findById", () => {
+		let req: Partial<Request>;
+		let res: Partial<Response>;
+		let statusMock: jest.Mock;
+		let jsonMock: jest.Mock;
 
-    beforeAll(async () => {
-      const { data: user, error } = await supabase.from("user").insert({
-        display_id: "test_display_id",
-        name: "test_user_name",
-        description: "test_user_description",
-      }).select().single();
-      if (error) throw error;
-      testUserId = user.id;
-    });
+		beforeEach(() => {
+			req = {
+				params: {
+					id: "testId",
+				},
+			};
+			statusMock = jest.fn().mockReturnThis();
+			jsonMock = jest.fn();
+			res = {
+				status: statusMock,
+				json: jsonMock,
+			};
+		});
 
-    afterAll(async () => {
-      await supabase.from("user").delete().eq("id", testUserId);
-    });
+		it("記事が見つかった場合、200 OK を返すか", async () => {
+			const article = {
+				id: "testId",
+				title: "testTitle",
+				content: "testContent",
+				user_id: "testUserId",
+			};
 
-    beforeEach(() => {
-      req = {
-        body: {
-          article: {
-            user_id: testUserId,
-            title: "testTitle",
-            content: "testContent",
-            published_at: new Date(),
-            is_public: true,
-          },
-        },
-      };
-      statusMock = jest.fn().mockReturnThis();
-      jsonMock = jest.fn();
-      res = {
-        status: statusMock,
-        json: jsonMock,
-      };
-    });
+			(ArticleModel.findById as jest.Mock).mockResolvedValue(article);
 
-    afterEach(() => {
-      jest.clearAllMocks();
-    });
+			await ArticleController.findById(req as Request, res as Response);
 
-    it("正常に終了した場合、作成した記事を返すか", async () => {
-      const article = req.body.article;
-      (ArticleModel.create as jest.Mock).mockResolvedValue(article);
-      await ArticleController.createArticle(req as Request, res as Response);
+			expect(statusMock).toHaveBeenCalledWith(200);
+			expect(jsonMock).toHaveBeenCalledWith(article);
+		});
 
-      expect(statusMock).toHaveBeenCalledWith(201);
-      expect(jsonMock).toHaveBeenCalledWith(article);
-    });
+		it("記事が見つからない場合、404 Not Found を返すか", async () => {
+			(ArticleModel.findById as jest.Mock).mockResolvedValue(null);
 
-    it("user_idが存在しない場合、400 Bad Requests を返すか", async () => {
-      req.body.article.user_id = undefined;
+			await ArticleController.findById(req as Request, res as Response);
 
-      await ArticleController.createArticle(req as Request, res as Response);
+			expect(statusMock).toHaveBeenCalledWith(404);
+			expect(jsonMock).toHaveBeenCalledWith({ message: "Article not found" });
+		});
 
-      expect(statusMock).toHaveBeenCalledWith(400);
-      expect(jsonMock).toHaveBeenCalledWith({ error: "Invalid article data" });
-    });
+		it("サーバーエラーが発生した場合、500 Internal Server Error を返すか", async () => {
+			(ArticleModel.findById as jest.Mock).mockRejectedValue(
+				new Error("some other error"),
+			);
 
-    it("user_id に対応するユーザーが存在しない場合、404 Not Found を返すか", async () => {
-      (UserModel.findById as jest.Mock).mockResolvedValue(null);
+			await ArticleController.findById(req as Request, res as Response);
 
-      await ArticleController.createArticle(req as Request, res as Response);
+			expect(statusMock).toHaveBeenCalledWith(500);
+			expect(jsonMock).toHaveBeenCalledWith({
+				message: "Internal Server Error",
+			});
+		});
+	});
 
-      expect(statusMock).toHaveBeenCalledWith(404);
-      expect(jsonMock).toHaveBeenCalledWith({ error: "User not found" });
-    });
+	describe("updateById", () => {
+		let req: Partial<Request>;
+		let res: Partial<Response>;
+		let statusMock: jest.Mock;
+		let jsonMock: jest.Mock;
 
-    it("サーバーエラーが発生した場合、500 Internal Server Error を返すか", async () => {
-      (ArticleModel.create as jest.Mock).mockRejectedValue(
-        new Error("some other error"),
-      );
+		beforeEach(() => {
+			req = {
+				params: {
+					id: "testId",
+				},
+				body: {
+					title: "updatedTitle",
+					content: "updatedContent",
+				},
+			};
+			statusMock = jest.fn().mockReturnThis();
+			jsonMock = jest.fn();
+			res = {
+				status: statusMock,
+				json: jsonMock,
+			};
+		});
 
-      await ArticleController.createArticle(req as Request, res as Response);
+		it("正常に更新された場合、200 OK を返すか", async () => {
+			const updatedArticle = {
+				id: "testId",
+				title: "updatedTitle",
+				content: "updatedContent",
+				user_id: "testUserId",
+			};
 
-      expect(statusMock).toHaveBeenCalledWith(500);
-      expect(jsonMock).toHaveBeenCalledWith({ error: "some other error" });
-    });
-  });
+			(ArticleModel.updateById as jest.Mock).mockResolvedValue(updatedArticle);
+
+			await ArticleController.updateById(req as Request, res as Response);
+
+			expect(statusMock).toHaveBeenCalledWith(200);
+			expect(jsonMock).toHaveBeenCalledWith(updatedArticle);
+		});
+
+		it("記事が見つからない場合、404 Not Found を返すか", async () => {
+			(ArticleModel.updateById as jest.Mock).mockRejectedValue(
+				new Error("Article not found"),
+			);
+
+			await ArticleController.updateById(req as Request, res as Response);
+
+			expect(statusMock).toHaveBeenCalledWith(404);
+			expect(jsonMock).toHaveBeenCalledWith({ message: "Article not found" });
+		});
+
+		it("無効な更新データの場合、400 Bad Request を返すか", async () => {
+			(ArticleModel.updateById as jest.Mock).mockRejectedValue(
+				new Error("Invalid update data"),
+			);
+
+			await ArticleController.updateById(req as Request, res as Response);
+
+			expect(statusMock).toHaveBeenCalledWith(400);
+			expect(jsonMock).toHaveBeenCalledWith({ message: "Invalid update data" });
+		});
+
+		it("サーバーエラーが発生した場合、500 Internal Server Error を返すか", async () => {
+			(ArticleModel.updateById as jest.Mock).mockRejectedValue(
+				new Error("some other error"),
+			);
+
+			await ArticleController.updateById(req as Request, res as Response);
+
+			expect(statusMock).toHaveBeenCalledWith(500);
+			expect(jsonMock).toHaveBeenCalledWith({
+				message: "Internal Server Error",
+			});
+		});
+	});
 });

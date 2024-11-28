@@ -142,4 +142,70 @@ describe("UserController", () => {
 			});
 		});
 	});
+
+	describe("updateByDisplayId", () => {
+		let req: Partial<Request>;
+		let res: Partial<Response>;
+		let statusMock: jest.Mock;
+		let jsonMock: jest.Mock;
+
+		beforeEach(() => {
+			req = {
+				params: {
+					displayId: "testDisplayId",
+				},
+				body: {
+					name: "updatedName",
+					description: "updatedDescription",
+				},
+			};
+			statusMock = jest.fn().mockReturnThis();
+			jsonMock = jest.fn();
+			res = {
+				status: statusMock,
+				json: jsonMock,
+			};
+		});
+
+		it("正常に更新された場合、200 OK を返すか", async () => {
+			const updatedUser = {
+				displayId: "testDisplayId",
+				name: "updatedName",
+				description: "updatedDescription",
+			};
+
+			(UserModel.updateByDisplayId as jest.Mock).mockResolvedValue(updatedUser);
+
+			await UserController.updateByDisplayId(req as Request, res as Response);
+
+			expect(statusMock).toHaveBeenCalledWith(200);
+			expect(jsonMock).toHaveBeenCalledWith(updatedUser);
+		});
+
+		it("display_id が重複している場合、409 Conflicted を返すか", async () => {
+			(UserModel.updateByDisplayId as jest.Mock).mockRejectedValue(
+				new Error("displayId is conflicted"),
+			);
+
+			await UserController.updateByDisplayId(req as Request, res as Response);
+
+			expect(statusMock).toHaveBeenCalledWith(409);
+			expect(jsonMock).toHaveBeenCalledWith({
+				message: "displayId is conflicted",
+			});
+		});
+
+		it("サーバーエラーが発生した場合、500 Internal Server Error を返すか", async () => {
+			(UserModel.updateByDisplayId as jest.Mock).mockRejectedValue(
+				new Error("some other error"),
+			);
+
+			await UserController.updateByDisplayId(req as Request, res as Response);
+
+			expect(statusMock).toHaveBeenCalledWith(500);
+			expect(jsonMock).toHaveBeenCalledWith({
+				message: "user creation failed",
+			});
+		});
+	});
 });
