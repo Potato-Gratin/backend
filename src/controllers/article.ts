@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { ArticleModel } from "../models/article";
+import { ArticleModel, ArticleForm, isArticleForm } from "../models/article";
 
 export const ArticleController = {
 	/**
@@ -85,13 +85,19 @@ export const ArticleController = {
 
 	create: async (req: Request, res: Response) => {
 		try {
-			const { title, content, user_id } = req.body;
-			const newArticle = await ArticleModel.create({ title, content, user_id });
+			const data = req.body;
+			if (isArticleForm(data)) {
+				res.status(400).json({ message: "Bad Request" });
+				return;
+			}
+
+			const newArticle = await ArticleModel.create(data);
 			res.status(201).json(newArticle);
 		} catch (error) {
 			res.status(500).json({ message: "Internal Server Error" });
 		}
 	},
+	
 	search: async (req: Request, res: Response) => {
 		try {
 			const { q, page: pageStr = "1" } = req.query;

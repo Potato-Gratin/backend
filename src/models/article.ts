@@ -1,5 +1,12 @@
 import supabase from "../libs/supabase";
 
+export interface ArticleForm {
+	title?: string;
+	content?: string;
+	is_public?: boolean;
+	user_id: string;
+}
+
 export interface Article {
 	id: string;
 	title: string | null;
@@ -10,6 +17,30 @@ export interface Article {
 	is_public: boolean;
 	view_count: number;
 	user_id: string;
+}
+
+export const isArticleForm = (form: any): form is ArticleForm => {
+	if (typeof form !== "object" || form === null) {
+		return false;
+	}
+
+	if (typeof form.user_id !== "string") {
+		return false;
+	}
+
+	if (form.title && typeof form.title !== "string") {
+		return false;
+	}
+
+	if (form.content && typeof form.content !== "string") {
+		return false;
+	}
+
+	if (form.is_public && typeof form.is_public !== "boolean") {
+		return false;
+	}
+
+	return true;
 }
 
 export const ArticleModel = {
@@ -88,14 +119,18 @@ export const ArticleModel = {
 		return data[0];
 	},
 
-	// TODO: 実際のDB操作に置き換える
-	create: async ({
-		title,
-		content,
-		user_id,
-	}: { title: string; content: string; user_id: string }) => {
-		const newArticle = { id: "3", title, content, user_id };
-		return newArticle;
+	create: async (form: ArticleForm) => {
+		const { data, error } = await supabase
+			.from("article")
+			.insert([form])
+			.select()
+		if (error) {
+			console.log(error);
+
+			throw new Error(`Database Error: ${error.message}`);
+		}
+
+		return data[0];
 	},
 
 	search: async (q: string, page: number) => {
