@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
-import { ReviewModel } from "../models/review";
 import { ArticleModel } from "../models/article";
+import { ReviewModel } from "../models/review";
 
 export const ReviewController = {
 	getArticleReviews: (req: Request, res: Response) => {
@@ -11,27 +11,32 @@ export const ReviewController = {
 	},
 	addReview: async (req: Request, res: Response) => {
 		const { content, user_id, parent_review_id } = req.body;
-		const { article_id } = req.params; 
+		const { article_id } = req.params;
 
 		try {
 			// 記事が存在するか確認 (controllers/article の findById を使用)
 			const article = await ArticleModel.findById(article_id);
 			if (!article) {
-			   res.status(404).json({
-				error: `Article with ID ${article_id} not found.`,
-			  });
+				res.status(404).json({
+					error: `Article with ID ${article_id} not found.`,
+				});
 			}
-		  // addReview メソッドを実行
-		  const newReview = await ReviewModel.addReview(article_id, content, user_id, parent_review_id);
-	
-		  // 成功時に新しいレビュー情報を返す
-		  res.status(201).json(newReview);
+			// addReview メソッドを実行
+			const newReview = await ReviewModel.addReview(
+				article_id,
+				content,
+				user_id,
+				parent_review_id,
+			);
+
+			// 成功時に新しいレビュー情報を返す
+			res.status(201).json(newReview);
 		} catch (error) {
-		   res.status(500).json({
-			error: "Failed to add review.",
-		  });
+			res.status(500).json({
+				error: "Failed to add review.",
+			});
 		}
-	  },
+	},
 	getUserReviews: (req: Request, res: Response) => {
 		const { displayId } = req.params;
 		const reviews = ReviewModel.getUserReviews(displayId);
