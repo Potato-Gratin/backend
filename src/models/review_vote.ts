@@ -29,6 +29,8 @@ const testReviewVotes: ReviewVote[] = [
 ];
 
 export const ReviewVoteModel = {
+	getReviewVotes: (): ReviewVote[] => testReviewVotes, // ダミーデータ取得用 (既存コード)
+	
 	async addOrUpdateVote(review_id: string, user_id: string, score: number) {
 	  const { data, error } = await supabase
 		.from("review_vote")
