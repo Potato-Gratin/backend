@@ -1,4 +1,12 @@
+import { PostgrestError } from "@supabase/supabase-js";
 import supabase from "../libs/supabase";
+
+export interface ArticleForm {
+	title?: string;
+	content?: string;
+	is_public?: boolean;
+	user_id: string;
+}
 
 export interface Article {
 	id: string;
@@ -88,14 +96,18 @@ export const ArticleModel = {
 		return data[0];
 	},
 
-	// TODO: 実際のDB操作に置き換える
-	create: async ({
-		title,
-		content,
-		user_id,
-	}: { title: string; content: string; user_id: string }) => {
-		const newArticle = { id: "3", title, content, user_id };
-		return newArticle;
+	create: async (form: ArticleForm) => {
+		const { data, error } = await supabase
+			.from("article")
+			.insert([form])
+			.select();
+
+		if (error) {
+			console.log(error);
+			throw new Error(`Database Error: ${error.message}`);
+		}
+
+		return data[0];
 	},
 
 	search: async (q: string, page: number) => {
