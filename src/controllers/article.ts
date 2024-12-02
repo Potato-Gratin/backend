@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { ArticleModel, ArticleForm, isArticleForm } from "../models/article";
+import { ArticleModel, ArticleForm } from "../models/article";
 
 export const ArticleController = {
 	/**
@@ -83,21 +83,31 @@ export const ArticleController = {
 		}
 	},
 
-	create: async (req: Request, res: Response) => {
+	createArticle: async (req: Request, res: Response) => {
+		let data: ArticleForm;
 		try {
-			const data = req.body;
-			if (isArticleForm(data)) {
-				res.status(400).json({ message: "Bad Request" });
-				return;
+			console.log(req.body);
+			data = req.body;
+		} catch (error) {
+			if (error instanceof Error) {
+				console.log(error);
 			}
+			res.status(400).json({ message: "記事を追加するためのデータが不足してます" });
+			return;
+		}
 
+		try {
 			const newArticle = await ArticleModel.create(data);
 			res.status(201).json(newArticle);
 		} catch (error) {
+			if (error instanceof Error) {
+				console.log(error);
+			}
+
 			res.status(500).json({ message: "Internal Server Error" });
 		}
 	},
-	
+
 	search: async (req: Request, res: Response) => {
 		try {
 			const { q, page: pageStr = "1" } = req.query;

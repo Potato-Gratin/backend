@@ -1,3 +1,4 @@
+import { PostgrestError } from "@supabase/supabase-js";
 import supabase from "../libs/supabase";
 
 export interface ArticleForm {
@@ -17,30 +18,6 @@ export interface Article {
 	is_public: boolean;
 	view_count: number;
 	user_id: string;
-}
-
-export const isArticleForm = (form: any): form is ArticleForm => {
-	if (typeof form !== "object" || form === null) {
-		return false;
-	}
-
-	if (typeof form.user_id !== "string") {
-		return false;
-	}
-
-	if (form.title && typeof form.title !== "string") {
-		return false;
-	}
-
-	if (form.content && typeof form.content !== "string") {
-		return false;
-	}
-
-	if (form.is_public && typeof form.is_public !== "boolean") {
-		return false;
-	}
-
-	return true;
 }
 
 export const ArticleModel = {
@@ -124,9 +101,9 @@ export const ArticleModel = {
 			.from("article")
 			.insert([form])
 			.select()
+
 		if (error) {
 			console.log(error);
-
 			throw new Error(`Database Error: ${error.message}`);
 		}
 
