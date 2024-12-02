@@ -100,7 +100,7 @@ export const ArticleModel = {
 		const { data, error } = await supabase
 			.from("article")
 			.insert([form])
-			.select()
+			.select();
 
 		if (error) {
 			console.log(error);

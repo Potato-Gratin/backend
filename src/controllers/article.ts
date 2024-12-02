@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { ArticleModel, ArticleForm } from "../models/article";
+import { type ArticleForm, ArticleModel } from "../models/article";
 
 export const ArticleController = {
 	/**
@@ -92,7 +92,9 @@ export const ArticleController = {
 			if (error instanceof Error) {
 				console.log(error);
 			}
-			res.status(400).json({ message: "記事を追加するためのデータが不足してます" });
+			res
+				.status(400)
+				.json({ message: "記事を追加するためのデータが不足してます" });
 			return;
 		}
 
