@@ -39,10 +39,6 @@ export const ReviewVoteController = {
 			// `reviewId` を数値に変換
 			const review_id = Number.parseInt(reviewId);
 
-			if (isNaN(review_id)) {
-				res.status(400).json({ error: "Invalid review ID format." });
-			}
-
 			// モデルの `deleteVote` を呼び出し
 			await ReviewVoteModel.deleteVote(review_id, userId);
 
