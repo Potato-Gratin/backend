@@ -30,27 +30,31 @@ const testReviewVotes: ReviewVote[] = [
 
 export const ReviewVoteModel = {
 	getReviewVotes: (): ReviewVote[] => testReviewVotes, // ダミーデータ取得用 (既存コード)
-	
+
 	async addOrUpdateVote(review_id: string, user_id: string, score: number) {
-	  const { data, error } = await supabase
-		.from("review_vote")
-		.upsert(
-		  {
-			review_id,
-			user_id,
-			score,
-		  },
-		  { onConflict: "review_id, user_id"}
-		)
-		.select();
-  
-	  if (error) {
-		throw new Error(`Failed to upsert review score: ${error.message}`);
-	  }
-  
-	  return data[0];
+		const { data, error } = await supabase
+			.from("review_vote")
+			.upsert(
+				{
+					review_id,
+					user_id,
+					score,
+				},
+				{ onConflict: "review_id, user_id" },
+			)
+			.select();
+
+		if (error) {
+			throw new Error(`Failed to upsert review score: ${error.message}`);
+		}
+
+		return data[0];
 	},
-		deleteVote: async (review_id: number, article_id: string, user_id: string) => {
-		  // TODO: 削除機能の実装 (未実装)
-		},
+	deleteVote: async (
+		review_id: number,
+		article_id: string,
+		user_id: string,
+	) => {
+		// TODO: 削除機能の実装 (未実装)
+	},
 };
