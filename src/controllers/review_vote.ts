@@ -29,35 +29,37 @@ export const ReviewVoteController = {
 	},
 	deleteVote: async (req: Request, res: Response) => {
 		const { reviewId, userId } = req.params;
-	  
+
 		// 必須パラメータのバリデーション
 		if (!reviewId || !userId) {
-		  return res.status(400).json({ error: "Invalid request parameters." });
+			return res.status(400).json({ error: "Invalid request parameters." });
 		}
-	  
+
 		try {
-		  // `reviewId` を数値に変換
-		  const review_id = Number.parseInt(reviewId);
-	  
-		  if (isNaN(review_id)) {
-			res.status(400).json({ error: "Invalid review ID format." });
-		  }
-	  
-		  // モデルの `deleteVote` を呼び出し
-		  await ReviewVoteModel.deleteVote(review_id, userId);
-	  
-		  // 成功レスポンス
-		  res.status(200).json({ message: "Vote deleted successfully." });
-		} catch (error) {
-		  // `error` の型を絞り込む
-		  if (error instanceof Error) {
-			// エラーメッセージに基づいてレスポンスを分ける
-			if (error.message.includes("Failed to delete review vote")) {
-			  res.status(404).json({ error: "Review vote not found." });
-			} else {
-			  res.status(500).json({ error: "Failed to delete review vote due to server error." });
+			// `reviewId` を数値に変換
+			const review_id = Number.parseInt(reviewId);
+
+			if (isNaN(review_id)) {
+				res.status(400).json({ error: "Invalid review ID format." });
 			}
-		  } 
+
+			// モデルの `deleteVote` を呼び出し
+			await ReviewVoteModel.deleteVote(review_id, userId);
+
+			// 成功レスポンス
+			res.status(200).json({ message: "Vote deleted successfully." });
+		} catch (error) {
+			// `error` の型を絞り込む
+			if (error instanceof Error) {
+				// エラーメッセージに基づいてレスポンスを分ける
+				if (error.message.includes("Failed to delete review vote")) {
+					res.status(404).json({ error: "Review vote not found." });
+				} else {
+					res.status(500).json({
+						error: "Failed to delete review vote due to server error.",
+					});
+				}
+			}
 		}
-	  },	  
+	},
 };

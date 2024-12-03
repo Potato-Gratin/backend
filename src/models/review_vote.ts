@@ -35,12 +35,12 @@ export const ReviewVoteModel = {
 	},
 	deleteVote: async (review_id: number, user_id: string): Promise<void> => {
 		const { error } = await supabase
-		  .from("review_vote")
-		  .delete()
-		  .match({ review_id, user_id }); 
-	  
+			.from("review_vote")
+			.delete()
+			.match({ review_id, user_id });
+
 		if (error) {
-		  throw new Error("Failed to delete review vote.");
+			throw new Error("Failed to delete review vote.");
 		}
-	  },
+	},
 };
