@@ -33,18 +33,14 @@ export const ReviewVoteModel = {
 	addOrUpdateVote: (vote: ReviewVote) => {
 		// TODO: 実装
 	},
-	deleteVote: async (review_id: number, user_id: string): Promise<boolean> => {
-		const { data, error } = await supabase
+	deleteVote: async (review_id: number, user_id: string): Promise<void> => {
+		const { error } = await supabase
 		  .from("review_vote")
 		  .delete()
-		  .match({ review_id, user_id }); // 複合主キーを条件に削除
+		  .match({ review_id, user_id }); 
 	  
 		if (error) {
-		  console.error("Error deleting review vote:", error);
 		  throw new Error("Failed to delete review vote.");
 		}
-	  
-		// 削除された行が存在するか確認
-		return data[0];
 	  },
 };
