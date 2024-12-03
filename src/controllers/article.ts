@@ -145,16 +145,34 @@ export const ArticleController = {
 		}
 	},
 	delete: async (req: Request, res: Response) => {
+		const { id } = req.params;
+
+		if (!id) {
+			res.status(400).json({
+				error: "Article ID is required.",
+			});
+		}
+
 		try {
-			const { id } = req.params;
-			const deletedArticle = await ArticleModel.deleteById(id);
-			if (!deletedArticle) {
-				res.status(404).json({ message: "Article not found" });
-			} else {
-				res.status(200).json({ message: "Article deleted successfully" });
+			// 記事が存在するか確認
+			const article = await ArticleModel.findById(id);
+			if (!article) {
+				res.status(400).json({
+					error: `Article with ID ${id} does not exist.`,
+				});
 			}
+
+			await ArticleModel.deleteById(id);
+
+			// 成功時のレスポンス
+			res.status(200).json({
+				message: `Article with ID ${id} has been successfully deleted.`,
+				deletedArticle: article,
+			});
 		} catch (error) {
-			res.status(500).json({ message: "Internal Server Error" });
+			res.status(500).json({
+				error: "Failed to delete the article.",
+			});
 		}
 	},
 };
