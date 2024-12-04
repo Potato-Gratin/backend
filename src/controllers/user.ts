@@ -1,6 +1,5 @@
 import type { Request, Response } from "express";
 import { UserModel } from "../models/user";
-import type { UserForm } from "../models/user";
 
 export const UserController = {
 	/**
@@ -9,16 +8,15 @@ export const UserController = {
 	 * @param res
 	 */
 	createUser: async (req: Request, res: Response) => {
-
 		// リクエストボディからユーザー情報を取得
-		let form = req.body;
+		const form = req.body;
 		if (!form) {
 			res.status(400).json({ message: "Request body is required" });
 			return;
 		}
 
 		const result = await UserModel.create(form);
-		if(result.isSuccess()) {
+		if (result.isSuccess()) {
 			const user = result.value;
 			res.status(201).json(user);
 		} else {

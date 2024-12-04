@@ -1,12 +1,12 @@
-import { PostgrestError } from "@supabase/supabase-js";
+import type { PostgrestError } from "@supabase/supabase-js";
 import supabase from "../libs/supabase";
-import { Failure, Result, Success } from "../types/result.types";
+import { Failure, type Result, Success } from "../types/result.types";
 
 export type UserForm = {
 	displayId: string;
 	name: string;
 	description?: string;
-}
+};
 
 export interface User {
 	id: string;
