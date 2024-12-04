@@ -1,3 +1,5 @@
+import supabase from "../libs/supabase";
+
 export type ReviewVote = {
 	review_id: number;
 	article_id: string;
@@ -31,7 +33,14 @@ export const ReviewVoteModel = {
 	addOrUpdateVote: (vote: ReviewVote) => {
 		// TODO: 実装
 	},
-	deleteVote: (review_id: number, article_id: string, user_id: string) => {
-		// TODO: 実装
+	deleteVote: async (review_id: number, user_id: string): Promise<void> => {
+		const { error } = await supabase
+			.from("review_vote")
+			.delete()
+			.match({ review_id, user_id });
+
+		if (error) {
+			throw new Error("Failed to delete review vote.");
+		}
 	},
 };
