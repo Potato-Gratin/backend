@@ -10,12 +10,10 @@ export const ArticleController = {
 			res.status(201).json(result.value);
 		} else {
 			const e = result.value;
-			switch (e.code) {
-				case "23503":   // 外部キー制約違反
-					res.status(404).json({ message: e.message });
-					break;
-				default:
-					res.status(500).json({ message: e.message });
+			if (e.code === "23503") { // 外部キー制約違反
+				res.status(404).json({ message: e.message });
+			} else {
+				res.status(500).json({ message: e.message });
 			}
 		}
 	},
