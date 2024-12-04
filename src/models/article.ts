@@ -1,5 +1,6 @@
-import { PostgrestError } from "@supabase/supabase-js";
+import type { PostgrestError } from "@supabase/supabase-js";
 import supabase from "../libs/supabase";
+import { Failure, type Result, Success } from "../types/result.types";
 
 export interface ArticleForm {
 	title?: string;
@@ -96,18 +97,19 @@ export const ArticleModel = {
 		return data[0];
 	},
 
-	create: async (form: ArticleForm) => {
+	createArticle: async (
+		form: ArticleForm,
+	): Promise<Result<Article, PostgrestError>> => {
 		const { data, error } = await supabase
 			.from("article")
 			.insert([form])
 			.select();
 
 		if (error) {
-			console.log(error);
-			throw new Error(`Database Error: ${error.message}`);
+			return new Failure(error);
 		}
 
-		return data[0];
+		return new Success(data[0]);
 	},
 
 	search: async (q: string, page: number) => {

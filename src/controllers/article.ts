@@ -1,15 +1,24 @@
 import type { Request, Response } from "express";
-import { type ArticleForm, ArticleModel } from "../models/article";
+import { ArticleModel } from "../models/article";
 
 export const ArticleController = {
-	/**
-	 * 記事を新しい順に取得する。
-	 * クエリパラメータとして page が与えられる場合はそのページを、
-	 * 与えられない場合は 1 ページ目を取得する。
-	 * １ページは10件に相当する。
-	 * @param req
-	 * @param res
-	 */
+	createArticle: async (req: Request, res: Response) => {
+		const data = req.body;
+
+		const result = await ArticleModel.createArticle(data);
+		if (result.isSuccess()) {
+			res.status(201).json(result.value);
+		} else {
+			const e = result.value;
+			if (e.code === "23503") {
+				// 外部キー制約違反
+				res.status(404).json({ message: e.message });
+			} else {
+				res.status(500).json({ message: e.message });
+			}
+		}
+	},
+
 	findAll: async (req: Request, res: Response) => {
 		try {
 			const { page: pageStr = "1" } = req.query;
@@ -80,33 +89,6 @@ export const ArticleController = {
 					message: "An unknown error occurred while updating the article.",
 				});
 			}
-		}
-	},
-
-	createArticle: async (req: Request, res: Response) => {
-		let data: ArticleForm;
-		try {
-			console.log(req.body);
-			data = req.body;
-		} catch (error) {
-			if (error instanceof Error) {
-				console.log(error);
-			}
-			res
-				.status(400)
-				.json({ message: "記事を追加するためのデータが不足してます" });
-			return;
-		}
-
-		try {
-			const newArticle = await ArticleModel.create(data);
-			res.status(201).json(newArticle);
-		} catch (error) {
-			if (error instanceof Error) {
-				console.log(error);
-			}
-
-			res.status(500).json({ message: "Internal Server Error" });
 		}
 	},
 

@@ -8,39 +8,24 @@ export const UserController = {
 	 * @param res
 	 */
 	createUser: async (req: Request, res: Response) => {
-		try {
-			const { displayId, name, description } = req.body.user;
+		// リクエストボディからユーザー情報を取得
+		const form = req.body;
+		if (!form) {
+			res.status(400).json({ message: "Request body is required" });
+			return;
+		}
 
-			// リクエストデータのバリデーション
-			if (!displayId) {
-				res.status(400).json({ message: "displayId is required" });
-			}
-			if (!name) {
-				res.status(400).json({ message: "name is required" });
-			}
-
-			// ユーザー作成処理
-			const user = await UserModel.create(displayId, name, description);
-
+		const result = await UserModel.create(form);
+		if (result.isSuccess()) {
+			const user = result.value;
 			res.status(201).json(user);
-		} catch (error) {
-			if (error instanceof Error) {
-				if (error.message === "displayId is conflicted") {
-					res.status(409).json({ message: error.message });
-				} else if (
-					error.message === "displayId is required" ||
-					error.message === "name is required"
-				) {
-					res.status(400).json({ message: error.message });
-				} else {
-					res.status(500).json({
-						message: "user creation failed",
-					});
-				}
+		} else {
+			const e = result.value;
+			if (e.code === "23505") {
+				// 一意制約違反
+				res.status(409).json({ message: e.message });
 			} else {
-				res.status(500).json({
-					message: "An unknown error occurred",
-				});
+				res.status(500).json({ message: e.message });
 			}
 		}
 	},

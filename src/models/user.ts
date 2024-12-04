@@ -1,4 +1,12 @@
+import type { PostgrestError } from "@supabase/supabase-js";
 import supabase from "../libs/supabase";
+import { Failure, type Result, Success } from "../types/result.types";
+
+export type UserForm = {
+	displayId: string;
+	name: string;
+	description?: string;
+};
 
 export interface User {
 	id: string;
@@ -12,35 +20,20 @@ export interface User {
 export const UserModel = {
 	/**
 	 * ユーザーを作成する。
-	 * @param {string} display_id 表示ID
-	 * @param {string} name ユーザー名
-	 * @param {string} description 説明
+	 * @param {UserForm} form ユーザー情報
 	 * @returns {Promise<User>} 作成したユーザー
 	 * @throws {Error} DB操作に失敗した場合
 	 */
-	create: async (
-		display_id: string,
-		name: string,
-		description: string,
-	): Promise<User> => {
+	create: async (form: UserForm): Promise<Result<User, PostgrestError>> => {
 		const { data, error } = await supabase
 			.from("user")
-			.insert({ display_id, name, description })
+			.insert(form)
 			.select("*")
 			.single();
 
-		if (error) {
-			switch (error.code) {
-				case "23505":
-					throw new Error("displayId is conflicted");
-				case "23502":
-					throw new Error("displayId is required");
-				default:
-					throw new Error(`Database Error: ${error.message}`);
-			}
-		}
+		if (error) return new Failure(error);
 
-		return data;
+		return new Success(data);
 	},
 
 	/**
