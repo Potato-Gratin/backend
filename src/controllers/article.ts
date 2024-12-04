@@ -3,14 +3,15 @@ import { ArticleModel } from "../models/article";
 
 export const ArticleController = {
 	createArticle: async (req: Request, res: Response) => {
-		let data = req.body;
+		const data = req.body;
 
 		const result = await ArticleModel.createArticle(data);
 		if (result.isSuccess()) {
 			res.status(201).json(result.value);
 		} else {
 			const e = result.value;
-			if (e.code === "23503") { // 外部キー制約違反
+			if (e.code === "23503") {
+				// 外部キー制約違反
 				res.status(404).json({ message: e.message });
 			} else {
 				res.status(500).json({ message: e.message });

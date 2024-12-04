@@ -21,7 +21,8 @@ export const UserController = {
 			res.status(201).json(user);
 		} else {
 			const e = result.value;
-			if (e.code === "23505") { // 一意制約違反
+			if (e.code === "23505") {
+				// 一意制約違反
 				res.status(409).json({ message: e.message });
 			} else {
 				res.status(500).json({ message: e.message });
