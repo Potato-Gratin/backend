@@ -22,11 +22,8 @@ export const UserController = {
 		} else {
 			const e = result.value;
 			switch (e.code) {
-				case "23505":
+				case "23505":   // 一意制約違反
 					res.status(409).json({ message: e.message });
-					break;
-				case "23502":
-					res.status(400).json({ message: e.message });
 					break;
 				default:
 					res.status(500).json({ message: e.message });
