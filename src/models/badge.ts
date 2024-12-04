@@ -20,7 +20,7 @@ export const BadgeModel = {
 	 * @returns {Promise<Badge>} 
 	 * @throws {Error} DB操作に失敗した場合
 	 */
-    addBadge: async(
+    createBadge: async(
         review_id: string,
         user_id: string,
         badge_flame_id: string,
