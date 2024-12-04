@@ -1,14 +1,47 @@
+import supabase from "../libs/supabase";
+
+export type Badge = {
+    id: string;
+    review_id: string;
+    user_id: string;
+    badge_flame_id: string;
+    badge_text_id: string;
+    created_at: string;
+    updated_at: string;
+};
+
 export const BadgeModel = {
-	addBadge: (articleId: string, reviewId: number, userId: string) => {
-		return {
-			id: "test-badge-id",
-			article_id: articleId,
-			review_id: reviewId,
-			user_id: userId,
-			created_at: new Date(),
-			updated_at: new Date(),
-		};
-	},
+	/**
+	 * ユーザーを作成する。
+	 * @param {string} review_id レビューID
+	 * @param {string} user_id ユーザーID
+	 * @param {string} badge_flame_id バッジフレームID
+	 * @param {string} badge_text_id バッジテキストID
+	 * @returns {Promise<Badge>} 
+	 * @throws {Error} DB操作に失敗した場合
+	 */
+    addBadge: async(
+        review_id: string,
+        user_id: string,
+        badge_flame_id: string,
+        badge_text_id: string
+    ): Promise<Badge> => {
+        const { data, error } = await supabase
+            .from("badge")
+            .insert({
+                review_id,
+                user_id,
+                badge_flame_id,
+                badge_text_id,
+            })
+            .select();
+
+        if (error) {
+            throw new Error(`Failed to add badge: ${error.message}`);
+        }
+
+        return data[0];
+    },
 	getBadgesByReview: (articleId: string, reviewId: number) => {
 		return [
 			{
