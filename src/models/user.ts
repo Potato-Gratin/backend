@@ -1,5 +1,11 @@
 import supabase from "../libs/supabase";
 
+export type UserForm = {
+	displayId: string;
+	name: string;
+	description?: string;
+}
+
 export interface User {
 	id: string;
 	display_id: string;
@@ -12,20 +18,14 @@ export interface User {
 export const UserModel = {
 	/**
 	 * ユーザーを作成する。
-	 * @param {string} display_id 表示ID
-	 * @param {string} name ユーザー名
-	 * @param {string} description 説明
+	 * @param {UserForm} form ユーザー情報
 	 * @returns {Promise<User>} 作成したユーザー
 	 * @throws {Error} DB操作に失敗した場合
 	 */
-	create: async (
-		display_id: string,
-		name: string,
-		description: string,
-	): Promise<User> => {
+	create: async (form: UserForm): Promise<User> => {
 		const { data, error } = await supabase
 			.from("user")
-			.insert({ display_id, name, description })
+			.insert(form)
 			.select("*")
 			.single();
 

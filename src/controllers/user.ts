@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { UserModel } from "../models/user";
+import type { UserForm } from "../models/user";
 
 export const UserController = {
 	/**
@@ -8,39 +9,29 @@ export const UserController = {
 	 * @param res
 	 */
 	createUser: async (req: Request, res: Response) => {
+
+		// リクエストボディからユーザー情報を取得
+		let form: UserForm;
 		try {
-			const { displayId, name, description } = req.body.user;
+			form = req.body.user;
+		} catch (error) {
+			res.status(400).json({ message: "User data is required" });
+			return;
+		}
 
-			// リクエストデータのバリデーション
-			if (!displayId) {
-				res.status(400).json({ message: "displayId is required" });
-			}
-			if (!name) {
-				res.status(400).json({ message: "name is required" });
-			}
-
-			// ユーザー作成処理
-			const user = await UserModel.create(displayId, name, description);
-
+		// ユーザー作成処理
+		try {
+			const user = await UserModel.create(form);
 			res.status(201).json(user);
 		} catch (error) {
 			if (error instanceof Error) {
 				if (error.message === "displayId is conflicted") {
 					res.status(409).json({ message: error.message });
-				} else if (
-					error.message === "displayId is required" ||
-					error.message === "name is required"
-				) {
-					res.status(400).json({ message: error.message });
 				} else {
 					res.status(500).json({
-						message: "user creation failed",
+						message: "Internal Server Error",
 					});
 				}
-			} else {
-				res.status(500).json({
-					message: "An unknown error occurred",
-				});
 			}
 		}
 	},
