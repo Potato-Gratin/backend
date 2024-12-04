@@ -11,27 +11,27 @@ export const UserController = {
 	createUser: async (req: Request, res: Response) => {
 
 		// リクエストボディからユーザー情報を取得
-		let form: UserForm;
-		try {
-			form = req.body.user;
-		} catch (error) {
-			res.status(400).json({ message: "User data is required" });
+		let form = req.body;
+		if (!form) {
+			res.status(400).json({ message: "Request body is required" });
 			return;
 		}
 
-		// ユーザー作成処理
-		try {
-			const user = await UserModel.create(form);
+		const result = await UserModel.create(form);
+		if(result.isSuccess()) {
+			const user = result.value;
 			res.status(201).json(user);
-		} catch (error) {
-			if (error instanceof Error) {
-				if (error.message === "displayId is conflicted") {
-					res.status(409).json({ message: error.message });
-				} else {
-					res.status(500).json({
-						message: "Internal Server Error",
-					});
-				}
+		} else {
+			const e = result.value;
+			switch (e.code) {
+				case "23505":
+					res.status(409).json({ message: e.message });
+					break;
+				case "23502":
+					res.status(400).json({ message: e.message });
+					break;
+				default:
+					res.status(500).json({ message: e.message });
 			}
 		}
 	},

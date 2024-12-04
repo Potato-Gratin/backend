@@ -1,6 +1,6 @@
 export type Result<T, E> = Success<T, E> | Failure<T, E>
 
-class Success<T, E> {
+export class Success<T, E> {
   constructor(readonly value: T) { }
   type = 'success' as const
   isSuccess(): this is Success<T, E> {
@@ -11,7 +11,7 @@ class Success<T, E> {
   }
 }
 
-class Failure<T, E> {
+export class Failure<T, E> {
   constructor(readonly value: E) { }
   type = 'failure' as const
   isSuccess(): this is Success<T, E> {
