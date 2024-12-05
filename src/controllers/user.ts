@@ -16,10 +16,7 @@ export const UserController = {
 		}
 
 		const result = await UserModel.create(form);
-		if (result.isSuccess()) {
-			const user = result.value;
-			res.status(201).json(user);
-		} else {
+		if (result.isFailure()) {
 			const e = result.value;
 			if (e.code === "23505") {
 				// 一意制約違反
@@ -29,6 +26,9 @@ export const UserController = {
 				res.status(500).json({ message: e.message });
 			}
 		}
+		
+		const user = result.value;
+		res.status(201).json(user);
 	},
 
 	search: async (req: Request, res: Response) => {
