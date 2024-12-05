@@ -3,7 +3,7 @@ export const BadgeFlame = {
 		{ id: 1, price: 100 },
 		{ id: 2, price: 200 },
 	],
-	
+
 	findById: async (id: number) => {
 		const data = [
 			{ id: 1, price: 100 },

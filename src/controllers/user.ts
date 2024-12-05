@@ -26,7 +26,7 @@ export const UserController = {
 				res.status(500).json({ message: e.message });
 			}
 		}
-		
+
 		const user = result.value;
 		res.status(201).json(user);
 	},
@@ -39,14 +39,17 @@ export const UserController = {
 			return;
 		}
 		if (typeof pageStr !== "string") {
-			res
-				.status(400)
-				.json({ message: "Query param 'page' is invalid." });
+			res.status(400).json({ message: "Query param 'page' is invalid." });
 			return;
 		}
 		const page = Number.parseInt(pageStr, 10);
 		if (Number.isNaN(page) || page <= 0) {
-			res.status(400).json({ message: "Query parameter 'page' must be an integer greater than or equal to 1." });
+			res
+				.status(400)
+				.json({
+					message:
+						"Query parameter 'page' must be an integer greater than or equal to 1.",
+				});
 		}
 
 		const result = await UserModel.search(q, page);
@@ -105,10 +108,7 @@ export const UserController = {
 			return;
 		}
 
-		const result = await UserModel.updateByDisplayId(
-			displayId,
-			updateData,
-		);
+		const result = await UserModel.updateByDisplayId(displayId, updateData);
 
 		if (result.isFailure()) {
 			const e = result.value;

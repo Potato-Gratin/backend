@@ -43,7 +43,10 @@ export const UserModel = {
 	 * @returns {Promise<Result<User[], PostgrestError>>} 検索結果
 	 * @throws {Error} DB操作に失敗した場合
 	 */
-	search: async (q: string, page: number): Promise<Result<User[], PostgrestError>> => {
+	search: async (
+		q: string,
+		page: number,
+	): Promise<Result<User[], PostgrestError>> => {
 		const { data, error } = await supabase
 			.from("user")
 			.select("*")
@@ -62,8 +65,10 @@ export const UserModel = {
 	 * @param {string} id 表示ID
 	 * @returns {Promise<Result<User | null, PostgrestError>>} 検索結果。見つからなかった場合は null
 	 * @throws {Error} DB操作に失敗した場合
-	*/
-	findById: async (id: string): Promise<Result<User | null, PostgrestError>> => {
+	 */
+	findById: async (
+		id: string,
+	): Promise<Result<User | null, PostgrestError>> => {
 		const { data, error } = await supabase
 			.from("user")
 			.select("*")
@@ -81,8 +86,10 @@ export const UserModel = {
 	 * @param {string} display_id 表示ID
 	 * @returns {Promise<Result<User | null, PostgrestError>>} 見つかったユーザー、または null
 	 * @throws {Error} DB操作に失敗した場合
-	*/
-	findByDisplayId: async (display_id: string): Promise<Result<User | null, PostgrestError>> => {
+	 */
+	findByDisplayId: async (
+		display_id: string,
+	): Promise<Result<User | null, PostgrestError>> => {
 		const { data, error } = await supabase
 			.from("user")
 			.select("*")
