@@ -3,10 +3,13 @@ import { FavoriteModel } from "../models/favorite";
 
 export const FavoriteController = {
 	createFavorite: async (req: Request, res: Response) => {
-		const { id: article_id } = req.params;
-		const { user_id } = req.body;
+		const { user_id, article_id } = req.body;
 		if (!user_id) {
 			res.status(400).json({ message: "user_id is required." });
+			return;
+		}
+		if (!article_id) {
+			res.status(400).json({ message: "article_id is required." });
 			return;
 		}
 
@@ -15,6 +18,7 @@ export const FavoriteController = {
 			const e = result.value;
 			console.log(e);
 			res.status(500).json({ message: e.message });
+			return;
 		}
 
 		const favorite = result.value;
