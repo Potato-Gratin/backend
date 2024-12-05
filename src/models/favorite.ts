@@ -24,6 +24,7 @@ export interface Favorite {
 }
 
 export const FavoriteModel = {
+	// TODO: Result
 	/**
 	 *指定した記事IDのいいねを取得する
 	 * @param {string} article_id 記事ID
