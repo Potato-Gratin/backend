@@ -94,12 +94,6 @@ export const ArticleModel = {
 
 		if (error) {
 			return new Failure(error)
-			// switch (error.code) {
-			// 	case "23502":
-			// 		throw new Error("Missing required fields"); // 必須フィールドエラー
-			// 	default:
-			// 		throw new Error(`Database Error: ${error.message}`);
-			// }
 		}
 
 		return new Success(data[0])

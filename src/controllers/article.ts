@@ -20,21 +20,28 @@ export const ArticleController = {
 	},
 
 	findAll: async (req: Request, res: Response) => {
-		try {
-			const { page: pageStr = "1" } = req.query;
-
-			if (typeof pageStr !== "string") {
-				res
-					.status(400)
-					.json({ message: "Query parameter 'page' must be a number" });
-				return;
-			}
-
-			const articles = await ArticleModel.findAll(Number.parseInt(pageStr));
-			res.status(200).json(articles);
-		} catch (error) {
-			res.status(500).json({ message: "Internal Server Error" });
+		const { page: pageStr = "1" } = req.query;
+		if (typeof pageStr !== "string") {
+			res.status(400).json({ message: "Query param 'page' is invalid." });
+			return;
 		}
+		const page = Number.parseInt(pageStr, 10);
+		if (Number.isNaN(page) || page <= 0) {
+			res.status(400).json({
+				message:
+					"Query parameter 'page' must be an integer greater than or equal to 1.",
+			});
+		}
+
+		const result = await ArticleModel.findAll(page);
+		if (result.isFailure()) {
+			const e = result.value;
+			console.log(e);
+			res.status(500).json({ message: e.message })
+		}
+
+		const articles = result.value;
+		res.status(200).json(articles);
 	},
 
 	/**
@@ -43,21 +50,20 @@ export const ArticleController = {
 	 * @param res
 	 */
 	findById: async (req: Request, res: Response) => {
-		try {
-			const { displayId } = req.params;
+		const { displayId } = req.params;
 
-			const article = await ArticleModel.findById(displayId);
-
-			if (!article) {
-				res.status(404).json({ message: "Article not found" });
-			} else {
-				res.status(200).json(article);
-			}
-		} catch (error) {
-			res.status(500).json({
-				message: "Internal Server Error",
-			});
+		const result = await ArticleModel.findById(displayId);
+		if (result.isFailure()) {
+			const e = result.value;
+			console.log(e);
+			res.status(500).json({ message: e.message })
 		}
+
+		const article = result.value
+		if (!article) {
+			res.status(404).json({ message: "Article not found" });
+		}
+		res.status(200).json(article);
 	},
 
 	/**
@@ -66,66 +72,71 @@ export const ArticleController = {
 	 * @param res
 	 */
 	updateById: async (req: Request, res: Response) => {
-		try {
-			const id = req.params.id;
-			const updateData = req.body;
+		const id = req.params.id;
+		const updateData = req.body;
 
-			const updatedArticle = await ArticleModel.updateById(id, updateData);
-
-			res.status(200).json(updatedArticle);
-		} catch (error) {
-			if (error instanceof Error) {
-				if (error.message === "Article not found") {
-					res.status(404).json({ message: "Article not found" }); // 404 Not Found
-					return;
-				}
-				if (error.message === "Invalid update data") {
-					res.status(400).json({ message: "Invalid update data" }); // 400 Bad Request
-					return;
-				}
-				res.status(500).json({ message: "Internal Server Error" });
-			} else {
-				res.status(500).json({
-					message: "An unknown error occurred while updating the article.",
-				});
+		const result = await ArticleModel.updateById(id, updateData);
+		if (result.isFailure()) {
+			const e = result.value
+			switch (e.code) {
+				case "23502":
+					throw new Error("Missing required fields"); // 必須フィールドエラー
+				default:
+					throw new Error(`Database Error: ${e.message}`);
 			}
 		}
+
+		const article = result.value
+		res.status(200).json(article);
 	},
 
 	search: async (req: Request, res: Response) => {
-		try {
-			const { q, page: pageStr = "1" } = req.query;
+		const { q, page: pageStr = "1" } = req.query;
 
-			if (!q || typeof q !== "string") {
-				res.status(400).json({ message: "Query parameter 'q' is required" });
-				return;
-			}
-			if (typeof pageStr !== "string") {
-				res
-					.status(400)
-					.json({ message: "Query parameter 'page' must be a number" });
-				return;
-			}
-
-			const articles = await ArticleModel.search(q, Number.parseInt(pageStr));
-			res.status(200).json(articles);
-		} catch (error) {
-			res.status(500).json({ message: "Internal Server Error: " });
+		if (!q || typeof q !== "string") {
+			res.status(400).json({ message: "Query param 'q' is required." });
+			return;
 		}
+		if (typeof pageStr !== "string") {
+			res.status(400).json({ message: "Query param 'page' is invalid." });
+			return;
+		}
+		const page = Number.parseInt(pageStr, 10);
+		if (Number.isNaN(page) || page <= 0) {
+			res.status(400).json({
+				message:
+					"Query parameter 'page' must be an integer greater than or equal to 1.",
+			});
+		}
+
+		const result = await ArticleModel.search(q, page);
+		if (result.isFailure()) {
+			const e = result.value
+			console.log(e);
+			res.status(500).json({ message: e.message })
+		}
+
+		const articles = result.value
+		res.status(200).json(articles);
 	},
+
 	update: async (req: Request, res: Response) => {
-		try {
-			const { id } = req.params;
-			const updatedArticle = await ArticleModel.updateById(id, req.body);
-			if (!updatedArticle) {
-				res.status(404).json({ message: "Article not found" });
-			} else {
-				res.status(200).json(updatedArticle);
-			}
-		} catch (error) {
-			res.status(400).json({ message: "Bad Request" });
+		const { id } = req.params;
+		const result = await ArticleModel.updateById(id, req.body);
+		if (result.isFailure()) {
+			const e = result.value
+			console.log(e);
+			res.status(500).json({ message: e.message })
 		}
+
+		const article = result.value
+		if (!article) {
+			res.status(404).json({ message: "Article not found" });
+		}
+		res.status(200).json(article);
 	},
+
+	// TODO: Result 型を使用した応答に置き換え
 	delete: async (req: Request, res: Response) => {
 		try {
 			const { id } = req.params;
