@@ -24,6 +24,23 @@ export interface Favorite {
 }
 
 export const FavoriteModel = {
+	createFavorite: async (user_id: string, article_id: string) => {
+		const { data, error } = await supabase.from("favorite").insert([
+			{
+				user_id: user_id,
+				article_id: article_id
+			},
+		]);
+
+		//todo　既にいいねが存在してた時
+		if (error) {
+			// FIXME: いいねが重複した場合（主キー制約違反）に対応する
+			throw new Error(`Failed to create favorite: ${error.message}`);
+		}
+
+		return data;
+	},
+
 	/**
 	 *指定した記事IDのいいねを取得する
 	 * @param {string} article_id 記事ID
@@ -45,25 +62,6 @@ export const FavoriteModel = {
 
 	getFavoritesByArticleId: (article_id: string) => {
 		return favorites.filter((favorite) => favorite.article_id === article_id);
-	},
-
-	createFavorite: async (user_id: string, article_id: string) => {
-		const { data, error } = await supabase.from("favorite").insert([
-			{
-				user_id: user_id,
-				article_id: article_id,
-				created_at: new Date().toISOString(),
-				updated_at: new Date().toISOString(),
-			},
-		]);
-
-		//todo　既にいいねが存在してた時
-		if (error) {
-			// FIXME: いいねが重複した場合（主キー制約違反）に対応する
-			throw new Error(`Failed to create favorite: ${error.message}`);
-		}
-
-		return data;
 	},
 
 	removeFavorite: (user_id: string, article_id: string) => {
