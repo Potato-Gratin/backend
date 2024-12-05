@@ -44,12 +44,10 @@ export const UserController = {
 		}
 		const page = Number.parseInt(pageStr, 10);
 		if (Number.isNaN(page) || page <= 0) {
-			res
-				.status(400)
-				.json({
-					message:
-						"Query parameter 'page' must be an integer greater than or equal to 1.",
-				});
+			res.status(400).json({
+				message:
+					"Query parameter 'page' must be an integer greater than or equal to 1.",
+			});
 		}
 
 		const result = await UserModel.search(q, page);
