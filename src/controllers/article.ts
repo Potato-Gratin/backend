@@ -37,7 +37,7 @@ export const ArticleController = {
 		if (result.isFailure()) {
 			const e = result.value;
 			console.log(e);
-			res.status(500).json({ message: e.message })
+			res.status(500).json({ message: e.message });
 		}
 
 		const articles = result.value;
@@ -56,10 +56,10 @@ export const ArticleController = {
 		if (result.isFailure()) {
 			const e = result.value;
 			console.log(e);
-			res.status(500).json({ message: e.message })
+			res.status(500).json({ message: e.message });
 		}
 
-		const article = result.value
+		const article = result.value;
 		if (!article) {
 			res.status(404).json({ message: "Article not found" });
 		}
@@ -77,7 +77,7 @@ export const ArticleController = {
 
 		const result = await ArticleModel.updateById(id, updateData);
 		if (result.isFailure()) {
-			const e = result.value
+			const e = result.value;
 			switch (e.code) {
 				case "23502":
 					throw new Error("Missing required fields"); // 必須フィールドエラー
@@ -86,7 +86,7 @@ export const ArticleController = {
 			}
 		}
 
-		const article = result.value
+		const article = result.value;
 		res.status(200).json(article);
 	},
 
@@ -111,12 +111,12 @@ export const ArticleController = {
 
 		const result = await ArticleModel.search(q, page);
 		if (result.isFailure()) {
-			const e = result.value
+			const e = result.value;
 			console.log(e);
-			res.status(500).json({ message: e.message })
+			res.status(500).json({ message: e.message });
 		}
 
-		const articles = result.value
+		const articles = result.value;
 		res.status(200).json(articles);
 	},
 
@@ -124,12 +124,12 @@ export const ArticleController = {
 		const { id } = req.params;
 		const result = await ArticleModel.updateById(id, req.body);
 		if (result.isFailure()) {
-			const e = result.value
+			const e = result.value;
 			console.log(e);
-			res.status(500).json({ message: e.message })
+			res.status(500).json({ message: e.message });
 		}
 
-		const article = result.value
+		const article = result.value;
 		if (!article) {
 			res.status(404).json({ message: "Article not found" });
 		}

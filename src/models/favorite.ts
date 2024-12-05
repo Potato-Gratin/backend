@@ -1,6 +1,6 @@
-import { PostgrestError } from "@supabase/supabase-js";
+import type { PostgrestError } from "@supabase/supabase-js";
 import supabase from "../libs/supabase";
-import { Failure, Result, Success } from "../types/result.types";
+import { Failure, type Result, Success } from "../types/result.types";
 
 const favorites = [
 	{
@@ -32,16 +32,18 @@ export const FavoriteModel = {
 	 * @returns {Promise<Result<User, PostgrestError>>} いいね数
 	 * @throws {Error} DB操作に失敗した場合
 	 */
-	getFavoriteCount: async (article_id: string): Promise<Result<number | null, PostgrestError>> => {
+	getFavoriteCount: async (
+		article_id: string,
+	): Promise<Result<number | null, PostgrestError>> => {
 		const { count, error } = await supabase
 			.from("favorite")
 			.select("*", { count: "exact", head: true })
 			.eq("article_id", article_id);
 
 		if (error) {
-			return new Failure(error)
+			return new Failure(error);
 		}
-		return new Success(count)
+		return new Success(count);
 	},
 
 	getFavoritesByArticleId: (article_id: string) => {

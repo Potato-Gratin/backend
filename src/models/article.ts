@@ -62,14 +62,16 @@ export const ArticleModel = {
 	 * @returns {Promise<Article | null>} 見つかった記事、または null
 	 * @throws {Error} DB操作に失敗した場合
 	 */
-	findById: async (id: string): Promise<Result<Article | null, PostgrestError>> => {
+	findById: async (
+		id: string,
+	): Promise<Result<Article | null, PostgrestError>> => {
 		const { data, error } = await supabase
 			.from("article")
 			.select("*")
 			.eq("id", id);
 
 		if (error) {
-			return new Failure(error)
+			return new Failure(error);
 		}
 
 		return new Success(data[0] || null);
@@ -93,10 +95,10 @@ export const ArticleModel = {
 			.select();
 
 		if (error) {
-			return new Failure(error)
+			return new Failure(error);
 		}
 
-		return new Success(data[0])
+		return new Success(data[0]);
 	},
 
 	search: async (q: string, page: number) => {
@@ -107,7 +109,7 @@ export const ArticleModel = {
 			.range((page - 1) * 10, page * 10 - 1);
 
 		if (error) {
-			return new Failure(error)
+			return new Failure(error);
 		}
 
 		return new Success(data);

@@ -1,5 +1,4 @@
 import type { Request, Response } from "express";
-import { ArticleModel } from "../models/article";
 import { FavoriteModel } from "../models/favorite";
 
 export const FavoriteController = {
@@ -9,17 +8,16 @@ export const FavoriteController = {
 	 * @param res
 	 */
 	getFavoriteCount: async (req: Request, res: Response): Promise<void> => {
-
 		const { id: articleId } = req.params;
 
 		const result = await FavoriteModel.getFavoriteCount(articleId);
 		if (result.isFailure()) {
-			const e = result.value
+			const e = result.value;
 			console.log(e);
-			res.status(500).json({ message: e.message })
+			res.status(500).json({ message: e.message });
 		}
 
-		const count = result.value
+		const count = result.value;
 		res.status(200).json({ count });
 	},
 
