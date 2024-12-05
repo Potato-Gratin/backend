@@ -26,21 +26,17 @@ export interface Favorite {
 }
 
 export const FavoriteModel = {
-	createFavorite: async (user_id: string, article_id: string) => {
-		const { data, error } = await supabase.from("favorite").insert([
-			{
-				user_id: user_id,
-				article_id: article_id
-			},
-		]);
+	createFavorite: async (user_id: string, article_id: string): Promise<Result<Favorite, PostgrestError>> => {
+		const { data, error } = await supabase
+			.from("favorite")
+			.insert([{ user_id: user_id, article_id: article_id }])
+			.select()
+			.single();
 
-		//todo　既にいいねが存在してた時
 		if (error) {
-			// FIXME: いいねが重複した場合（主キー制約違反）に対応する
-			throw new Error(`Failed to create favorite: ${error.message}`);
+			return new Failure(error);
 		}
-
-		return data;
+		return new Success(data);
 	},
 
 	/**

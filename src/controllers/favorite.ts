@@ -10,8 +10,15 @@ export const FavoriteController = {
 			return;
 		}
 
-		const newFavorite = await FavoriteModel.createFavorite(user_id, article_id);
-		res.status(201).json(newFavorite);
+		const result = await FavoriteModel.createFavorite(user_id, article_id);
+		if (result.isFailure()) {
+			const e = result.value;
+			console.log(e);
+			res.status(500).json({ message: e.message });
+		}
+
+		const favorite = result.value;
+		res.status(201).json(favorite);
 	},
 
 	/**
