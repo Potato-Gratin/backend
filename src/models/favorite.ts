@@ -26,6 +26,22 @@ export interface Favorite {
 }
 
 export const FavoriteModel = {
+	createFavorite: async (
+		user_id: string,
+		article_id: string,
+	): Promise<Result<Favorite, PostgrestError>> => {
+		const { data, error } = await supabase
+			.from("favorite")
+			.insert([{ user_id: user_id, article_id: article_id }])
+			.select()
+			.single();
+
+		if (error) {
+			return new Failure(error);
+		}
+		return new Success(data);
+	},
+
 	/**
 	 *指定した記事IDのいいねを取得する
 	 * @param {string} article_id 記事ID
@@ -48,17 +64,6 @@ export const FavoriteModel = {
 
 	getFavoritesByArticleId: (article_id: string) => {
 		return favorites.filter((favorite) => favorite.article_id === article_id);
-	},
-
-	addFavorite: (user_id: string, article_id: string) => {
-		const newFavorite = {
-			user_id,
-			article_id,
-			created_at: new Date(),
-			updated_at: new Date(),
-		};
-		favorites.push(newFavorite);
-		return newFavorite;
 	},
 
 	removeFavorite: (user_id: string, article_id: string) => {
