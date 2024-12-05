@@ -9,22 +9,18 @@ export const FavoriteController = {
 	 * @param res
 	 */
 	getFavoriteCount: async (req: Request, res: Response): Promise<void> => {
-		try {
-			const { id: articleId } = req.params;
 
-			// 記事が存在するか確認
-			const article = await ArticleModel.findById(articleId);
-			if (!article) {
-				res.status(404).json({ message: "Article not found" });
-				return;
-			}
+		const { id: articleId } = req.params;
 
-			const favoriteCount = await FavoriteModel.getFavoriteCount(articleId);
-
-			res.status(200).json({ articleId, favoriteCount });
-		} catch (error) {
-			res.status(500).json({ message: "Failed to retrieve favorite count." });
+		const result = await FavoriteModel.getFavoriteCount(articleId);
+		if (result.isFailure()) {
+			const e = result.value
+			console.log(e);
+			res.status(500).json({ message: e.message })
 		}
+
+		const count = result.value
+		res.status(200).json({ count });
 	},
 
 	// TODO: 実装

@@ -102,7 +102,6 @@ export const UserModel = {
 		return new Success(data[0] || null);
 	},
 
-	// TODO: Result
 	/**
 	 * ユーザーを更新する。
 	 * @param {string} display_id 表示ID
