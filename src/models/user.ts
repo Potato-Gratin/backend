@@ -18,7 +18,6 @@ export interface User {
 }
 
 export const UserModel = {
-	// TODO: Result
 	/**
 	 * ユーザーを作成する。
 	 * @param {UserForm} form ユーザー情報
@@ -37,7 +36,6 @@ export const UserModel = {
 		return new Success(data);
 	},
 
-	// TODO: Result
 	/**
 	 * ユーザーを検索する。
 	 * @param {string} q 検索クエリ
@@ -45,7 +43,7 @@ export const UserModel = {
 	 * @returns {Promise<User[]>} 検索結果
 	 * @throws {Error} DB操作に失敗した場合
 	 */
-	search: async (q: string, page: number): Promise<User[]> => {
+	search: async (q: string, page: number): Promise<Result<User[], PostgrestError>> => {
 		const { data, error } = await supabase
 			.from("user")
 			.select("*")
@@ -53,10 +51,10 @@ export const UserModel = {
 			.range((page - 1) * 10, page * 10 - 1);
 
 		if (error) {
-			throw new Error(`Database Error: ${error.message}`);
+			return new Failure(error);
 		}
 
-		return data || [];
+		return new Success(data);
 	},
 
 	// TODO: Result
