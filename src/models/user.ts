@@ -21,7 +21,7 @@ export const UserModel = {
 	/**
 	 * ユーザーを作成する。
 	 * @param {UserForm} form ユーザー情報
-	 * @returns {Promise<User>} 作成したユーザー
+	 * @returns {Promise<Result<User, PostgrestError>>} 作成したユーザー
 	 * @throws {Error} DB操作に失敗した場合
 	 */
 	create: async (form: UserForm): Promise<Result<User, PostgrestError>> => {
@@ -40,7 +40,7 @@ export const UserModel = {
 	 * ユーザーを検索する。
 	 * @param {string} q 検索クエリ
 	 * @param {number} page ページ番号
-	 * @returns {Promise<User[]>} 検索結果
+	 * @returns {Promise<Result<User[], PostgrestError>>} 検索結果
 	 * @throws {Error} DB操作に失敗した場合
 	 */
 	search: async (q: string, page: number): Promise<Result<User[], PostgrestError>> => {
@@ -57,44 +57,42 @@ export const UserModel = {
 		return new Success(data);
 	},
 
-	// TODO: Result
 	/**
 	 * 指定した表示IDのユーザーを検索する。
 	 * @param {string} id 表示ID
-	 * @returns {Promise<User | null>} 見つかったユーザー、または null
+	 * @returns {Promise<Result<User | null, PostgrestError>>} 検索結果。見つからなかった場合は null
 	 * @throws {Error} DB操作に失敗した場合
 	*/
-	findById: async (id: string): Promise<User | null> => {
+	findById: async (id: string): Promise<Result<User | null, PostgrestError>> => {
 		const { data, error } = await supabase
 			.from("user")
 			.select("*")
 			.eq("id", id);
 
 		if (error) {
-			throw new Error(`Database Error: ${error.message}`);
+			return new Failure(error);
 		}
 
-		return data[0] || null;
+		return new Success(data[0] || null);
 	},
 
-	// TODO: Result
-	findByDisplayId: async (display_id: string): Promise<User | null> => {
-		/**
-		 * 指定した表示IDのユーザーを検索する。
-		 * @param {string} display_id 表示ID
-		 * @returns {Promise<User | null>} 見つかったユーザー、または null
-		 * @throws {Error} DB操作に失敗した場合
-		 */
+	/**
+	 * 指定した表示IDのユーザーを検索する。
+	 * @param {string} display_id 表示ID
+	 * @returns {Promise<Result<User | null, PostgrestError>>} 見つかったユーザー、または null
+	 * @throws {Error} DB操作に失敗した場合
+	*/
+	findByDisplayId: async (display_id: string): Promise<Result<User | null, PostgrestError>> => {
 		const { data, error } = await supabase
 			.from("user")
 			.select("*")
 			.eq("display_id", display_id);
 
 		if (error) {
-			throw new Error(`Database Error: ${error.message}`);
+			return new Failure(error);
 		}
 
-		return data[0] || null;
+		return new Success(data[0] || null);
 	},
 
 	// TODO: Result
@@ -102,13 +100,13 @@ export const UserModel = {
 	 * ユーザーを更新する。
 	 * @param {string} display_id 表示ID
 	 * @param {Object} updatedData 更新するユーザ情報
-	 * @returns {Promise<User>} 更新したユーザー
+	 * @returns {Promise<Result<User, PostgrestError>>} 更新したユーザー
 	 * @throws {Error} DB操作に失敗した場合
 	 */
 	updateByDisplayId: async (
 		display_id: string,
 		updateData: Partial<User>,
-	): Promise<User> => {
+	): Promise<Result<User, PostgrestError>> => {
 		const { data, error } = await supabase
 			.from("user")
 			.update(updateData)
@@ -116,24 +114,21 @@ export const UserModel = {
 			.select();
 
 		if (error) {
-			switch (error.code) {
-				case "23505":
-					throw new Error("displayId is conflicted");
-				case "23514":
-					if (error.message.includes("user_display_id_check")) {
-						throw new Error("displayId is conflicted");
-					}
-					break;
-				default:
-					console.log(error.code);
-					throw new Error(`Database Error: ${error.message}`);
-			}
+			return new Failure(error);
+			// switch (error.code) {
+			// 	case "23505":
+			// 		throw new Error("displayId is conflicted");
+			// 	case "23514":
+			// 		if (error.message.includes("user_display_id_check")) {
+			// 			throw new Error("displayId is conflicted");
+			// 		}
+			// 		break;
+			// 	default:
+			// 		console.log(error.code);
+			// 		throw new Error(`Database Error: ${error.message}`);
+			// }
 		}
 
-		if (!data || data.length === 0) {
-			throw new Error("No data found");
-		}
-
-		return data[0];
+		return new Success(data[0]);
 	},
 };
