@@ -115,18 +115,6 @@ export const UserModel = {
 
 		if (error) {
 			return new Failure(error);
-			// switch (error.code) {
-			// 	case "23505":
-			// 		throw new Error("displayId is conflicted");
-			// 	case "23514":
-			// 		if (error.message.includes("user_display_id_check")) {
-			// 			throw new Error("displayId is conflicted");
-			// 		}
-			// 		break;
-			// 	default:
-			// 		console.log(error.code);
-			// 		throw new Error(`Database Error: ${error.message}`);
-			// }
 		}
 
 		return new Success(data[0]);

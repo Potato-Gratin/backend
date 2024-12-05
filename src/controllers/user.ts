@@ -25,6 +25,7 @@ export const UserController = {
 				// 一意制約違反
 				res.status(409).json({ message: e.message });
 			} else {
+				console.log(e);
 				res.status(500).json({ message: e.message });
 			}
 		}
@@ -51,6 +52,7 @@ export const UserController = {
 		const result = await UserModel.search(q, page);
 		if (result.isFailure()) {
 			const e = result.value;
+			console.log(e);
 			res.status(500).json({ message: e.message });
 		}
 
@@ -64,6 +66,7 @@ export const UserController = {
 		const result = await UserModel.findById(id);
 		if (result.isFailure()) {
 			const e = result.value;
+			console.log(e);
 			res.status(500).json({ message: e.message });
 			return;
 		}
@@ -81,6 +84,7 @@ export const UserController = {
 		const result = await UserModel.findByDisplayId(displayId);
 		if (result.isFailure()) {
 			const e = result.value;
+			console.log(e);
 			res.status(500).json({ message: e.message });
 			return;
 		}
@@ -93,34 +97,35 @@ export const UserController = {
 	},
 
 	updateByDisplayId: async (req: Request, res: Response) => {
-		try {
-			const displayId = req.params.displayId;
-			const updateData = req.body;
+		const displayId = req.params.displayId;
+		const updateData = req.body;
 
-			const updatedUser = await UserModel.updateByDisplayId(
-				displayId,
-				updateData,
-			);
-			res.status(200).json(updatedUser);
-		} catch (error) {
-			if (error instanceof Error) {
-				if (error.message === "displayId is conflicted") {
-					res.status(409).json({ message: error.message });
-				} else if (
-					error.message === "displayId is required" ||
-					error.message === "name is required"
-				) {
-					res.status(400).json({ message: error.message });
-				} else {
-					res.status(500).json({
-						message: "user creation failed",
-					});
-				}
-			} else {
-				res.status(500).json({
-					message: "An unknown error occurred",
-				});
+		if (!updateData) {
+			res.status(400).json({ message: "Request must be have data." });
+			return;
+		}
+
+		const result = await UserModel.updateByDisplayId(
+			displayId,
+			updateData,
+		);
+
+		if (result.isFailure()) {
+			const e = result.value;
+			switch (e.code) {
+				case "23505":
+					res.status(409).json({ message: e.message });
+					return;
+				case "23514":
+					res.status(400).json({ message: e.message });
+					return;
+				default:
+					console.log(e);
+					throw new Error(`Database Error: ${e.message}`);
 			}
 		}
+
+		const updatedUser = result.value;
+		res.status(200).json(updatedUser);
 	},
 };
