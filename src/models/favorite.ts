@@ -26,7 +26,10 @@ export interface Favorite {
 }
 
 export const FavoriteModel = {
-	createFavorite: async (user_id: string, article_id: string): Promise<Result<Favorite, PostgrestError>> => {
+	createFavorite: async (
+		user_id: string,
+		article_id: string,
+	): Promise<Result<Favorite, PostgrestError>> => {
 		const { data, error } = await supabase
 			.from("favorite")
 			.insert([{ user_id: user_id, article_id: article_id }])
