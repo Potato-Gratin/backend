@@ -1,4 +1,6 @@
+import type { PostgrestError } from "@supabase/supabase-js";
 import supabase from "../libs/supabase";
+import { Failure, type Result, Success } from "../types/result.types";
 
 const favorites = [
 	{
@@ -44,20 +46,21 @@ export const FavoriteModel = {
 	/**
 	 *指定した記事IDのいいねを取得する
 	 * @param {string} article_id 記事ID
-	 * @returns {Promise<User>} いいね数
+	 * @returns {Promise<Result<User, PostgrestError>>} いいね数
 	 * @throws {Error} DB操作に失敗した場合
 	 */
-	getFavoriteCount: async (article_id: string): Promise<number> => {
-		const { data, error } = await supabase
+	getFavoriteCount: async (
+		article_id: string,
+	): Promise<Result<number | null, PostgrestError>> => {
+		const { count, error } = await supabase
 			.from("favorite")
-			.select("article_id", { count: "exact" })
+			.select("*", { count: "exact", head: true })
 			.eq("article_id", article_id);
 
 		if (error) {
-			throw new Error(`Failed to retrieve favorite count: ${error.message}`);
+			return new Failure(error);
 		}
-
-		return data ? data.length : 0;
+		return new Success(count);
 	},
 
 	getFavoritesByArticleId: (article_id: string) => {
