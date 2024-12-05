@@ -22,6 +22,22 @@ export interface Article {
 }
 
 export const ArticleModel = {
+	createArticle: async (
+		form: ArticleForm,
+	): Promise<Result<Article, PostgrestError>> => {
+		const { data, error } = await supabase
+			.from("article")
+			.insert([form])
+			.select();
+
+		if (error) {
+			return new Failure(error);
+		}
+
+		return new Success(data[0]);
+	},
+
+	// TODO: Result
 	/**
 	 * 記事を新しい順に取得する。
 	 * @returns {Promise<Article[]>} 記事一覧
@@ -43,6 +59,7 @@ export const ArticleModel = {
 		return data;
 	},
 
+	// TODO: Result
 	/**
 	 * 指定したIDの記事を検索する。
 	 * @param {string} id 記事のID
@@ -64,6 +81,7 @@ export const ArticleModel = {
 		return data[0] || null;
 	},
 
+	// TODO: Result
 	/**
 	 * 記事を更新する。
 	 * @param {string} id 記事ID
@@ -97,21 +115,7 @@ export const ArticleModel = {
 		return data[0];
 	},
 
-	createArticle: async (
-		form: ArticleForm,
-	): Promise<Result<Article, PostgrestError>> => {
-		const { data, error } = await supabase
-			.from("article")
-			.insert([form])
-			.select();
-
-		if (error) {
-			return new Failure(error);
-		}
-
-		return new Success(data[0]);
-	},
-
+	// TODO: Result
 	search: async (q: string, page: number) => {
 		const { data, error } = await supabase
 			.from("article")
@@ -128,6 +132,7 @@ export const ArticleModel = {
 		return data;
 	},
 
+	// TODO: Result
 	deleteById: async (id: string) => {
 		// TODO: 実際のDB操作に置き換える
 		const articles = [

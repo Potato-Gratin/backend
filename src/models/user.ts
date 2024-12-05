@@ -18,6 +18,7 @@ export interface User {
 }
 
 export const UserModel = {
+	// TODO: Result
 	/**
 	 * ユーザーを作成する。
 	 * @param {UserForm} form ユーザー情報
@@ -36,6 +37,7 @@ export const UserModel = {
 		return new Success(data);
 	},
 
+	// TODO: Result
 	/**
 	 * ユーザーを検索する。
 	 * @param {string} q 検索クエリ
@@ -57,13 +59,14 @@ export const UserModel = {
 		return data || [];
 	},
 
+	// TODO: Result
+	/**
+	 * 指定した表示IDのユーザーを検索する。
+	 * @param {string} id 表示ID
+	 * @returns {Promise<User | null>} 見つかったユーザー、または null
+	 * @throws {Error} DB操作に失敗した場合
+	*/
 	findById: async (id: string): Promise<User | null> => {
-		/**
-		 * 指定した表示IDのユーザーを検索する。
-		 * @param {string} id 表示ID
-		 * @returns {Promise<User | null>} 見つかったユーザー、または null
-		 * @throws {Error} DB操作に失敗した場合
-		 */
 		const { data, error } = await supabase
 			.from("user")
 			.select("*")
@@ -76,6 +79,7 @@ export const UserModel = {
 		return data[0] || null;
 	},
 
+	// TODO: Result
 	findByDisplayId: async (display_id: string): Promise<User | null> => {
 		/**
 		 * 指定した表示IDのユーザーを検索する。
@@ -95,6 +99,7 @@ export const UserModel = {
 		return data[0] || null;
 	},
 
+	// TODO: Result
 	/**
 	 * ユーザーを更新する。
 	 * @param {string} display_id 表示ID
