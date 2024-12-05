@@ -37,13 +37,12 @@ export const ArticleModel = {
 		return new Success(data[0]);
 	},
 
-	// TODO: Result
 	/**
 	 * 記事を新しい順に取得する。
-	 * @returns {Promise<Article[]>} 記事一覧
+	 * @returns {Promise<Result<Article[]>>} 記事一覧
 	 * @throws {Error} DB操作に失敗した場合
 	 */
-	findAll: async (page: number): Promise<Article[]> => {
+	findAll: async (page: number): Promise<Result<Article[], PostgrestError>> => {
 		const { data, error } = await supabase
 			.from("article")
 			.select("*")
@@ -51,37 +50,31 @@ export const ArticleModel = {
 			.range((page - 1) * 10, page * 10 - 1);
 
 		if (error) {
-			console.log(error);
-
-			throw new Error(`Database Error: ${error.message}`);
+			return new Failure(error);
 		}
 
-		return data;
+		return new Success(data);
 	},
 
-	// TODO: Result
 	/**
 	 * 指定したIDの記事を検索する。
 	 * @param {string} id 記事のID
 	 * @returns {Promise<Article | null>} 見つかった記事、または null
 	 * @throws {Error} DB操作に失敗した場合
 	 */
-	findById: async (id: string): Promise<Article | null> => {
+	findById: async (id: string): Promise<Result<Article | null, PostgrestError>> => {
 		const { data, error } = await supabase
 			.from("article")
 			.select("*")
 			.eq("id", id);
 
 		if (error) {
-			console.log(error);
-
-			throw new Error(`Database Error: ${error.message}`);
+			return new Failure(error)
 		}
 
-		return data[0] || null;
+		return new Success(data[0] || null);
 	},
 
-	// TODO: Result
 	/**
 	 * 記事を更新する。
 	 * @param {string} id 記事ID
@@ -92,7 +85,7 @@ export const ArticleModel = {
 	updateById: async (
 		id: string,
 		updateData: Partial<Article>,
-	): Promise<Article> => {
+	): Promise<Result<Article, PostgrestError>> => {
 		const { data, error } = await supabase
 			.from("article")
 			.update(updateData)
@@ -100,22 +93,18 @@ export const ArticleModel = {
 			.select();
 
 		if (error) {
-			switch (error.code) {
-				case "23502":
-					throw new Error("Missing required fields"); // 必須フィールドエラー
-				default:
-					throw new Error(`Database Error: ${error.message}`);
-			}
+			return new Failure(error)
+			// switch (error.code) {
+			// 	case "23502":
+			// 		throw new Error("Missing required fields"); // 必須フィールドエラー
+			// 	default:
+			// 		throw new Error(`Database Error: ${error.message}`);
+			// }
 		}
 
-		if (!data[0]) {
-			throw new Error("Article not found");
-		}
-
-		return data[0];
+		return new Success(data[0])
 	},
 
-	// TODO: Result
 	search: async (q: string, page: number) => {
 		const { data, error } = await supabase
 			.from("article")
@@ -124,12 +113,10 @@ export const ArticleModel = {
 			.range((page - 1) * 10, page * 10 - 1);
 
 		if (error) {
-			console.log(error);
-
-			throw new Error(`Database Error: ${error.message}`);
+			return new Failure(error)
 		}
 
-		return data;
+		return new Success(data);
 	},
 
 	// TODO: Result
