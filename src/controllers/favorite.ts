@@ -1,38 +1,47 @@
 import type { Request, Response } from "express";
-import { ArticleModel } from "../models/article";
 import { FavoriteModel } from "../models/favorite";
 
 export const FavoriteController = {
+	createFavorite: async (req: Request, res: Response) => {
+		const { user_id, article_id } = req.body;
+		if (!user_id) {
+			res.status(400).json({ message: "user_id is required." });
+			return;
+		}
+		if (!article_id) {
+			res.status(400).json({ message: "article_id is required." });
+			return;
+		}
+
+		const result = await FavoriteModel.createFavorite(user_id, article_id);
+		if (result.isFailure()) {
+			const e = result.value;
+			console.log(e);
+			res.status(500).json({ message: e.message });
+			return;
+		}
+
+		const favorite = result.value;
+		res.status(201).json(favorite);
+	},
+
 	/**
 	 * 記事のいいね数を取得する
 	 * @param req
 	 * @param res
 	 */
 	getFavoriteCount: async (req: Request, res: Response): Promise<void> => {
-		try {
-			const { id: articleId } = req.params;
+		const { id: articleId } = req.params;
 
-			// 記事が存在するか確認
-			const article = await ArticleModel.findById(articleId);
-			if (!article) {
-				res.status(404).json({ message: "Article not found" });
-				return;
-			}
-
-			const favoriteCount = await FavoriteModel.getFavoriteCount(articleId);
-
-			res.status(200).json({ articleId, favoriteCount });
-		} catch (error) {
-			res.status(500).json({ message: "Failed to retrieve favorite count." });
+		const result = await FavoriteModel.getFavoriteCount(articleId);
+		if (result.isFailure()) {
+			const e = result.value;
+			console.log(e);
+			res.status(500).json({ message: e.message });
 		}
-	},
 
-	// TODO: 実装
-	addFavorite: (req: Request, res: Response) => {
-		const { id } = req.params;
-		const { user_id } = req.body;
-		const newFavorite = FavoriteModel.addFavorite(user_id, id);
-		res.status(201).json(newFavorite);
+		const count = result.value;
+		res.status(200).json({ count });
 	},
 
 	// TODO: 実装

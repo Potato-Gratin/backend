@@ -2,12 +2,21 @@ import type { Request, Response } from "express";
 import { ReviewModel } from "../models/review";
 
 export const ReviewController = {
-	getArticleReviews: (req: Request, res: Response) => {
+	getArticleReviews: async (req: Request, res: Response) => {
 		const { articleId } = req.params;
 		const page = Number.parseInt(req.query.page as string) || 1;
-		const reviews = ReviewModel.getArticleReviews(articleId, page);
-		res.json(reviews);
+
+		const result = await ReviewModel.getReviewsByArticleId(articleId, page);
+		if (result.isFailure()) {
+			const e = result.value;
+			console.log(e);
+			res.status(500).json({ message: e.message });
+		}
+
+		const reviews = result.value;
+		res.status(200).json(reviews);
 	},
+
 	addReview: (req: Request, res: Response) => {
 		const { articleId } = req.params;
 		const { content, userId } = req.body;
