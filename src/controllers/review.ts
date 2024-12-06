@@ -2,6 +2,13 @@ import type { Request, Response } from "express";
 import { ReviewModel } from "../models/review";
 
 export const ReviewController = {
+	addReview: (req: Request, res: Response) => {
+		const { articleId } = req.params;
+		const { content, userId } = req.body;
+		const newReview = ReviewModel.addReview(articleId, content, userId);
+		res.status(201).json(newReview);
+	},
+
 	getArticleReviews: async (req: Request, res: Response) => {
 		const { articleId } = req.params;
 		const page = Number.parseInt(req.query.page as string) || 1;
@@ -17,12 +24,6 @@ export const ReviewController = {
 		res.status(200).json(reviews);
 	},
 
-	addReview: (req: Request, res: Response) => {
-		const { articleId } = req.params;
-		const { content, userId } = req.body;
-		const newReview = ReviewModel.addReview(articleId, content, userId);
-		res.status(201).json(newReview);
-	},
 	getUserReviews: async (req: Request, res: Response) => {
 		const { userId } = req.params;
 		const page = Number.parseInt(req.query.page as string) || 1;
@@ -38,6 +39,7 @@ export const ReviewController = {
 		const reviews = result.value;
 		res.status(200).json(reviews);
 	},
+
 	deleteReview: (req: Request, res: Response) => {
 		const { articleId, reviewId } = req.params;
 		const result = ReviewModel.deleteReview(articleId, reviewId);
