@@ -56,9 +56,21 @@ export const ReviewController = {
 		res.status(200).json(reviews);
 	},
 
-	deleteReview: (req: Request, res: Response) => {
+	deleteReview: async (req: Request, res: Response) => {
 		const { articleId, reviewId } = req.params;
-		const result = ReviewModel.deleteReview(articleId, reviewId);
-		res.json(result);
+
+		const result = await ReviewModel.deleteReview(articleId, reviewId);
+		if (result.isFailure()) {
+			const e = result.value;
+			console.log(e);
+			res.status(500).json({ message: e.message });
+		}
+
+		const review = result.value;
+		if (!review) {
+			res.status(404).json({ message: "Review not found." });
+		}
+
+		res.status(200).json(review);
 	},
 };

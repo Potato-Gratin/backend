@@ -1,6 +1,7 @@
-import type { PostgrestError } from "@supabase/supabase-js";
+import type { PostgrestError, User } from "@supabase/supabase-js";
 import supabase from "../libs/supabase";
 import { Failure, type Result, Success } from "../types/result.types";
+import type { Article } from "./article";
 
 export interface Review {
 	id: string;
@@ -14,7 +15,12 @@ export interface Review {
 }
 
 export const ReviewModel = {
-	addReview: (articleId: string, content: string, userId: string) => {
+	// TODO: 実装
+	addReview: (
+		articleId: Article["id"],
+		content: string,
+		userId: User["id"],
+	) => {
 		// テストデータを返す
 		return {
 			id: "new-review-id",
@@ -29,7 +35,7 @@ export const ReviewModel = {
 	},
 
 	getReviewsByArticleId: async (
-		articleId: string,
+		articleId: Article["id"],
 		page: number,
 	): Promise<Result<Review[], PostgrestError>> => {
 		const { data, error } = await supabase
@@ -47,7 +53,7 @@ export const ReviewModel = {
 	},
 
 	findByUserId: async (
-		userId: string,
+		userId: User["id"],
 		page: number,
 	): Promise<Result<Review[], PostgrestError>> => {
 		const { data, error } = await supabase
@@ -64,8 +70,20 @@ export const ReviewModel = {
 		return new Success(data);
 	},
 
-	deleteReview: (articleId: string, reviewId: string) => {
-		// テストデータを返す
-		return { success: true };
+	deleteReview: async (
+		articleId: Article["id"],
+		reviewId: Review["id"],
+	): Promise<Result<Review, PostgrestError>> => {
+		const { data, error } = await supabase
+			.from("review")
+			.delete()
+			.match({ article_id: articleId, id: reviewId })
+			.select("*")
+			.single();
+
+		if (error) {
+			return new Failure(error);
+		}
+		return new Success(data);
 	},
 };
