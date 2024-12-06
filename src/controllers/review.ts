@@ -26,21 +26,17 @@ export const ReviewController = {
 	getUserReviews: async (req: Request, res: Response) => {
 		const { userId } = req.params;
 		const page = Number.parseInt(req.query.page as string) || 1;
-		const limit = 10; // 1ページ当たりの件数
-		const offset = (page - 1) * limit; // オフセット計算
 
-		try {
-			// モデルでレビュー情報を取得
-			const reviews = await ReviewModel.getReviewsByUserId(
-				userId,
-				limit,
-				offset,
-			);
+		const result = await ReviewModel.getReviewsByUserId(userId, page);
 
-			res.status(200).json(reviews);
-		} catch (error) {
-			res.status(500).json({ message: "Failed to fetch reviews." });
+		if (result.isFailure()) {
+			const e = result.value;
+			console.log(e);
+			res.status(500).json({ message: e.message });
 		}
+
+		const reviews = result.value;
+		res.status(200).json(reviews);
 	},
 	deleteReview: (req: Request, res: Response) => {
 		const { articleId, reviewId } = req.params;
