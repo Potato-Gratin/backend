@@ -1,4 +1,6 @@
+import { PostgrestError } from "@supabase/supabase-js";
 import supabase from "../libs/supabase";
+import { Failure, Result, Success } from "../types/result.types";
 
 export interface Review {
 	id: string;
@@ -12,25 +14,19 @@ export interface Review {
 }
 
 export const ReviewModel = {
-	getReviewsByArticleId: async (
-		articleId: string, // 取得したい記事のID
-		limit: number, // 1ページあたりのデータ件数
-		offset: number, // 開始位置（スキップする行数）
-	) => {
+	getReviewsByArticleId: async (articleId: string, page: number): Promise<Result<Review[], PostgrestError>> => {
 		const { data, error } = await supabase
-			.from("review") // "reviews" テーブルを指定
-			.select("*") // 全カラムを取得
-			.eq("article_id", articleId) // 指定された articleId に一致するデータをフィルタリング
-			.order("created_at", { ascending: false }) // 作成日時で降順ソート
-			.range(offset, offset + limit - 1); // 範囲を指定してデータ取得
+			.from("review")
+			.select("*")
+			.eq("article_id", articleId)
+			.order("created_at", { ascending: true })
+			.range((page - 1) * 10, page * 10 - 1);
 
-		// エラーチェック
 		if (error) {
-			throw new Error(`Failed to fetch reviews: ${error.message}`);
+			return new Failure(error)
 		}
 
-		// レビューリストを返す
-		return data;
+		return new Success(data);
 	},
 	addReview: (articleId: string, content: string, userId: string) => {
 		// テストデータを返す

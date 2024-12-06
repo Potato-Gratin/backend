@@ -5,21 +5,16 @@ export const ReviewController = {
 	getArticleReviews: async (req: Request, res: Response) => {
 		const { articleId } = req.params;
 		const page = Number.parseInt(req.query.page as string) || 1;
-		const limit = 10; // 1ページ当たりの件数
-		const offset = (page - 1) * limit; // オフセット計算
 
-		try {
-			// モデルでレビュー情報を取得
-			const reviews = await ReviewModel.getReviewsByArticleId(
-				articleId,
-				limit,
-				offset,
-			);
-
-			res.status(200).json(reviews);
-		} catch (error) {
-			res.status(500).json({ message: "Failed to fetch reviews." });
+		const result = await ReviewModel.getReviewsByArticleId(articleId, page);
+		if (result.isFailure()) {
+			const e = result.value;
+			console.log(e);
+			res.status(500).json({ message: e.message });
 		}
+
+		const reviews = result.value;
+		res.status(200).json(reviews);
 	},
 
 	addReview: (req: Request, res: Response) => {
