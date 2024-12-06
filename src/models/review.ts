@@ -14,6 +14,20 @@ export interface Review {
 }
 
 export const ReviewModel = {
+	addReview: (articleId: string, content: string, userId: string) => {
+		// テストデータを返す
+		return {
+			id: "new-review-id",
+			article_id: articleId,
+			content: content,
+			created_at: new Date(),
+			updated_at: new Date(),
+			user_id: userId,
+			parent_review_id: null,
+			parent_article_id: null,
+		};
+	},
+
 	getReviewsByArticleId: async (
 		articleId: string,
 		page: number,
@@ -31,19 +45,7 @@ export const ReviewModel = {
 
 		return new Success(data);
 	},
-	addReview: (articleId: string, content: string, userId: string) => {
-		// テストデータを返す
-		return {
-			id: "new-review-id",
-			article_id: articleId,
-			content: content,
-			created_at: new Date(),
-			updated_at: new Date(),
-			user_id: userId,
-			parent_review_id: null,
-			parent_article_id: null,
-		};
-	},
+
 	getReviewsByUserId: async (
 		userId: string, // 取得したいユーザーのuserID
 		limit: number, // 1ページあたりのデータ件数
