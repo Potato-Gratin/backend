@@ -1,7 +1,7 @@
 import type { PostgrestError, User } from "@supabase/supabase-js";
 import supabase from "../libs/supabase";
 import { Failure, type Result, Success } from "../types/result.types";
-import { Article } from "./article";
+import type { Article } from "./article";
 
 export interface Review {
 	id: string;
@@ -16,7 +16,11 @@ export interface Review {
 
 export const ReviewModel = {
 	// TODO: 実装
-	addReview: (articleId: Article["id"], content: string, userId: User["id"]) => {
+	addReview: (
+		articleId: Article["id"],
+		content: string,
+		userId: User["id"],
+	) => {
 		// テストデータを返す
 		return {
 			id: "new-review-id",
@@ -66,7 +70,10 @@ export const ReviewModel = {
 		return new Success(data);
 	},
 
-	deleteReview: async (articleId: Article["id"], reviewId: Review["id"]): Promise<Result<Review, PostgrestError>> => {
+	deleteReview: async (
+		articleId: Article["id"],
+		reviewId: Review["id"],
+	): Promise<Result<Review, PostgrestError>> => {
 		const { data, error } = await supabase
 			.from("review")
 			.delete()
