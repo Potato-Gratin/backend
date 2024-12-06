@@ -28,6 +28,7 @@ describe("ArticleModel", () => {
 
 	beforeEach(async () => {
 		await supabase.from("article").delete().eq("id", testArticleId);
+		await supabase.from("favorite").delete().eq("article_id", testArticleId);
 		const { data, error } = await supabase
 			.from("article")
 			.insert({
@@ -48,6 +49,7 @@ describe("ArticleModel", () => {
 
 	afterEach(async () => {
 		await supabase.from("article").delete().eq("id", testArticleId);
+		await supabase.from("favorite").delete().eq("article_id", testArticleId);
 	});
 
 	describe("findById", () => {
