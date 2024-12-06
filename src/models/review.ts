@@ -14,23 +14,6 @@ export interface Review {
 }
 
 export const ReviewModel = {
-	getReviewsByArticleId: async (
-		articleId: string,
-		page: number,
-	): Promise<Result<Review[], PostgrestError>> => {
-		const { data, error } = await supabase
-			.from("review")
-			.select("*")
-			.eq("article_id", articleId)
-			.order("created_at", { ascending: true })
-			.range((page - 1) * 10, page * 10 - 1);
-
-		if (error) {
-			return new Failure(error);
-		}
-
-		return new Success(data);
-	},
 	addReview: (articleId: string, content: string, userId: string) => {
 		// テストデータを返す
 		return {
@@ -44,19 +27,43 @@ export const ReviewModel = {
 			parent_article_id: null,
 		};
 	},
-	getUserReviews: (displayId: string) => {
-		// テストデータを返す
-		return Array(10).fill({
-			id: "test-review-id",
-			article_id: "test-article-id",
-			content: "This is a test review.",
-			created_at: new Date(),
-			updated_at: new Date(),
-			user_id: displayId,
-			parent_review_id: null,
-			parent_article_id: null,
-		});
+
+	getReviewsByArticleId: async (
+		articleId: string,
+		page: number,
+	): Promise<Result<Review[], PostgrestError>> => {
+		const { data, error } = await supabase
+			.from("review")
+			.select("*")
+			.eq("article_id", articleId)
+			.order("created_at", { ascending: false })
+			.range((page - 1) * 10, page * 10 - 1);
+
+		if (error) {
+			return new Failure(error);
+		}
+
+		return new Success(data);
 	},
+
+	findByUserId: async (
+		userId: string,
+		page: number,
+	): Promise<Result<Review[], PostgrestError>> => {
+		const { data, error } = await supabase
+			.from("review")
+			.select("*")
+			.eq("user_id", userId)
+			.order("created_at", { ascending: false })
+			.range((page - 1) * 10, page * 10 - 1);
+
+		if (error) {
+			return new Failure(error);
+		}
+
+		return new Success(data);
+	},
+
 	deleteReview: (articleId: string, reviewId: string) => {
 		// テストデータを返す
 		return { success: true };
