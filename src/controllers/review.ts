@@ -28,12 +28,12 @@ export const ReviewController = {
 	getUserReviews: async (req: Request, res: Response) => {
 		// displayId から userId を解決
 		const { displayId } = req.params;
-		let result1 = await UserModel.findByDisplayId(displayId);
+		const result1 = await UserModel.findByDisplayId(displayId);
 		if (result1.isFailure()) {
 			const e = result1.value;
 			console.log(e);
 			res.status(500).json({ message: e.message });
-			return
+			return;
 		}
 		const user = result1.value;
 		if (user === null) {
