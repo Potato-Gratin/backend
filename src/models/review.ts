@@ -66,16 +66,17 @@ export const ReviewModel = {
 		return new Success(data);
 	},
 
-	deleteReview: async (articleId: Article["id"], reviewId: Review["id"]) => {
+	deleteReview: async (articleId: Article["id"], reviewId: Review["id"]): Promise<Result<Review, PostgrestError>> => {
 		const { data, error } = await supabase
 			.from("review")
 			.delete()
-			.match({ article_id: articleId, id: reviewId });
+			.match({ article_id: articleId, id: reviewId })
+			.select("*")
+			.single();
 
 		if (error) {
-			throw new Error(`Failed to delete review: ${error.message}`);
+			return new Failure(error);
 		}
-
-		return data || [];
+		return new Success(data);
 	},
 };
