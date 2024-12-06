@@ -1,6 +1,6 @@
-import { PostgrestError } from "@supabase/supabase-js";
+import type { PostgrestError } from "@supabase/supabase-js";
 import supabase from "../libs/supabase";
-import { Failure, Result, Success } from "../types/result.types";
+import { Failure, type Result, Success } from "../types/result.types";
 
 export interface Review {
 	id: string;
@@ -14,7 +14,10 @@ export interface Review {
 }
 
 export const ReviewModel = {
-	getReviewsByArticleId: async (articleId: string, page: number): Promise<Result<Review[], PostgrestError>> => {
+	getReviewsByArticleId: async (
+		articleId: string,
+		page: number,
+	): Promise<Result<Review[], PostgrestError>> => {
 		const { data, error } = await supabase
 			.from("review")
 			.select("*")
@@ -23,7 +26,7 @@ export const ReviewModel = {
 			.range((page - 1) * 10, page * 10 - 1);
 
 		if (error) {
-			return new Failure(error)
+			return new Failure(error);
 		}
 
 		return new Success(data);
