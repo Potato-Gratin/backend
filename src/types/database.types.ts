@@ -7,6 +7,31 @@ export type Json =
 	| Json[];
 
 export type Database = {
+	graphql_public: {
+		Tables: {
+			[_ in never]: never;
+		};
+		Views: {
+			[_ in never]: never;
+		};
+		Functions: {
+			graphql: {
+				Args: {
+					operationName?: string;
+					query?: string;
+					variables?: Json;
+					extensions?: Json;
+				};
+				Returns: Json;
+			};
+		};
+		Enums: {
+			[_ in never]: never;
+		};
+		CompositeTypes: {
+			[_ in never]: never;
+		};
+	};
 	public: {
 		Tables: {
 			article: {
@@ -55,6 +80,8 @@ export type Database = {
 			};
 			badge: {
 				Row: {
+					badge_flame_id: string | null;
+					badge_text_id: string | null;
 					created_at: string;
 					id: string;
 					review_id: string;
@@ -62,6 +89,8 @@ export type Database = {
 					user_id: string;
 				};
 				Insert: {
+					badge_flame_id?: string | null;
+					badge_text_id?: string | null;
 					created_at?: string;
 					id?: string;
 					review_id?: string;
@@ -69,6 +98,8 @@ export type Database = {
 					user_id?: string;
 				};
 				Update: {
+					badge_flame_id?: string | null;
+					badge_text_id?: string | null;
 					created_at?: string;
 					id?: string;
 					review_id?: string;
@@ -81,6 +112,20 @@ export type Database = {
 						columns: ["user_id"];
 						isOneToOne: false;
 						referencedRelation: "user";
+						referencedColumns: ["id"];
+					},
+					{
+						foreignKeyName: "fk_badge_flame";
+						columns: ["badge_flame_id"];
+						isOneToOne: false;
+						referencedRelation: "badge_flame";
+						referencedColumns: ["id"];
+					},
+					{
+						foreignKeyName: "fk_badge_text";
+						columns: ["badge_text_id"];
+						isOneToOne: false;
+						referencedRelation: "badge_text";
 						referencedColumns: ["id"];
 					},
 				];
@@ -158,7 +203,7 @@ export type Database = {
 					created_at: string;
 					id: string;
 					parent_article_id: string | null;
-					parent_review_id: string;
+					parent_review_id: string | null;
 					updated_at: string;
 					user_id: string;
 				};
@@ -168,7 +213,7 @@ export type Database = {
 					created_at?: string;
 					id?: string;
 					parent_article_id?: string | null;
-					parent_review_id?: string;
+					parent_review_id?: string | null;
 					updated_at?: string;
 					user_id?: string;
 				};
@@ -178,7 +223,7 @@ export type Database = {
 					created_at?: string;
 					id?: string;
 					parent_article_id?: string | null;
-					parent_review_id?: string;
+					parent_review_id?: string | null;
 					updated_at?: string;
 					user_id?: string;
 				};
