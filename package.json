@@ -15,7 +15,8 @@
 		"db:start": "npx supabase start",
 		"db:stop": "npx supabase stop",
 		"db:pull": "npx supabase db pull",
-		"db:reset": "npx supabase db reset"
+		"db:reset": "npx supabase db reset",
+		"db:typegen": "npx supabase gen types typescript --local > src/types/database.types.ts"
 	},
 	"author": "",
 	"license": "MIT",

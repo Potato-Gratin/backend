@@ -9,8 +9,8 @@ export interface Review {
 	created_at: string;
 	updated_at: string;
 	user_id: string;
-	parent_review_id: string;
-	parent_article_id: string;
+	parent_review_id: string | null;
+	parent_article_id: string | null;
 }
 
 export const ReviewModel = {
