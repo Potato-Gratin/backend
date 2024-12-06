@@ -46,7 +46,7 @@ export const ReviewModel = {
 		return new Success(data);
 	},
 
-	getReviewsByUserId: async (userId: string, page: number): Promise<Result<Review[], PostgrestError>> => {
+	findByUserId: async (userId: string, page: number): Promise<Result<Review[], PostgrestError>> => {
 		const { data, error } = await supabase
 			.from("review")
 			.select("*")
