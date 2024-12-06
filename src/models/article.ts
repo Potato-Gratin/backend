@@ -1,4 +1,13 @@
+import type { PostgrestError } from "@supabase/supabase-js";
 import supabase from "../libs/supabase";
+import { Failure, type Result, Success } from "../types/result.types";
+
+export interface ArticleForm {
+	title?: string;
+	content?: string;
+	is_public?: boolean;
+	user_id: string;
+}
 
 export interface Article {
 	id: string;
@@ -13,25 +22,59 @@ export interface Article {
 }
 
 export const ArticleModel = {
+	createArticle: async (
+		form: ArticleForm,
+	): Promise<Result<Article, PostgrestError>> => {
+		const { data, error } = await supabase
+			.from("article")
+			.insert([form])
+			.select();
+
+		if (error) {
+			return new Failure(error);
+		}
+
+		return new Success(data[0]);
+	},
+
+	/**
+	 * 記事を新しい順に取得する。
+	 * @returns {Promise<Result<Article[]>>} 記事一覧
+	 * @throws {Error} DB操作に失敗した場合
+	 */
+	findAll: async (page: number): Promise<Result<Article[], PostgrestError>> => {
+		const { data, error } = await supabase
+			.from("article")
+			.select("*")
+			.order("created_at", { ascending: false })
+			.range((page - 1) * 10, page * 10 - 1);
+
+		if (error) {
+			return new Failure(error);
+		}
+
+		return new Success(data);
+	},
+
 	/**
 	 * 指定したIDの記事を検索する。
 	 * @param {string} id 記事のID
 	 * @returns {Promise<Article | null>} 見つかった記事、または null
 	 * @throws {Error} DB操作に失敗した場合
 	 */
-	findById: async (id: string): Promise<Article | null> => {
+	findById: async (
+		id: string,
+	): Promise<Result<Article | null, PostgrestError>> => {
 		const { data, error } = await supabase
 			.from("article")
 			.select("*")
 			.eq("id", id);
 
 		if (error) {
-			console.log(error);
-
-			throw new Error(`Database Error: ${error.message}`);
+			return new Failure(error);
 		}
 
-		return data[0] || null;
+		return new Success(data[0] || null);
 	},
 
 	/**
@@ -44,7 +87,7 @@ export const ArticleModel = {
 	updateById: async (
 		id: string,
 		updateData: Partial<Article>,
-	): Promise<Article> => {
+	): Promise<Result<Article, PostgrestError>> => {
 		const { data, error } = await supabase
 			.from("article")
 			.update(updateData)
@@ -52,42 +95,27 @@ export const ArticleModel = {
 			.select();
 
 		if (error) {
-			switch (error.code) {
-				case "23502":
-					throw new Error("Missing required fields"); // 必須フィールドエラー
-				default:
-					throw new Error(`Database Error: ${error.message}`);
-			}
+			return new Failure(error);
 		}
 
-		if (!data[0]) {
-			throw new Error("Article not found");
-		}
-
-		return data[0];
+		return new Success(data[0]);
 	},
 
-	// TODO: 実際のDB操作に置き換える
-	create: async ({
-		title,
-		content,
-		user_id,
-	}: { title: string; content: string; user_id: string }) => {
-		const newArticle = { id: "3", title, content, user_id };
-		return newArticle;
-	},
-
-	// TODO: 実際のDB操作に置き換える
 	search: async (q: string, page: number) => {
-		const articles = [
-			{ id: "1", title: "Title 1", content: "Content 1", user_id: "user1" },
-			{ id: "2", title: "Title 2", content: "Content 2", user_id: "user2" },
-		];
-		return articles
-			.filter((article) => article.title.includes(q))
-			.slice((page - 1) * 30, page * 30);
+		const { data, error } = await supabase
+			.from("article")
+			.select("*")
+			.ilike("title", `%${q}%`)
+			.range((page - 1) * 10, page * 10 - 1);
+
+		if (error) {
+			return new Failure(error);
+		}
+
+		return new Success(data);
 	},
 
+	// TODO: Result
 	deleteById: async (id: string) => {
 		// TODO: 実際のDB操作に置き換える
 		const articles = [

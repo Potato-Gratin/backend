@@ -15,17 +15,20 @@
 		"db:start": "npx supabase start",
 		"db:stop": "npx supabase stop",
 		"db:pull": "npx supabase db pull",
-		"db:reset": "npx supabase db reset"
+		"db:reset": "npx supabase db reset",
+		"db:typegen": "npx supabase gen types typescript --local > src/types/database.types.ts"
 	},
 	"author": "",
 	"license": "MIT",
 	"dependencies": {
 		"@supabase/supabase-js": "^2.46.1",
+		"cors": "^2.8.5",
 		"express": "^4.21.0"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
 		"@dotenvx/dotenvx": "^1.21.0",
+		"@types/cors": "^2.8.17",
 		"@types/express": "^5.0.0",
 		"@types/jest": "^29.5.14",
 		"@types/supertest": "^6.0.2",

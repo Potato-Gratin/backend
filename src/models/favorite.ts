@@ -1,4 +1,6 @@
+import type { PostgrestError } from "@supabase/supabase-js";
 import supabase from "../libs/supabase";
+import { Failure, type Result, Success } from "../types/result.types";
 
 const favorites = [
 	{
@@ -24,38 +26,44 @@ export interface Favorite {
 }
 
 export const FavoriteModel = {
+	createFavorite: async (
+		user_id: string,
+		article_id: string,
+	): Promise<Result<Favorite, PostgrestError>> => {
+		const { data, error } = await supabase
+			.from("favorite")
+			.insert([{ user_id: user_id, article_id: article_id }])
+			.select()
+			.single();
+
+		if (error) {
+			return new Failure(error);
+		}
+		return new Success(data);
+	},
+
 	/**
 	 *指定した記事IDのいいねを取得する
 	 * @param {string} article_id 記事ID
-	 * @returns {Promise<User>} いいね数
+	 * @returns {Promise<Result<User, PostgrestError>>} いいね数
 	 * @throws {Error} DB操作に失敗した場合
 	 */
-	getFavoriteCount: async (article_id: string): Promise<number> => {
-		const { data, error } = await supabase
+	getFavoriteCount: async (
+		article_id: string,
+	): Promise<Result<number | null, PostgrestError>> => {
+		const { count, error } = await supabase
 			.from("favorite")
-			.select("article_id", { count: "exact" })
+			.select("*", { count: "exact", head: true })
 			.eq("article_id", article_id);
 
 		if (error) {
-			throw new Error(`Failed to retrieve favorite count: ${error.message}`);
+			return new Failure(error);
 		}
-
-		return data ? data.length : 0;
+		return new Success(count);
 	},
 
 	getFavoritesByArticleId: (article_id: string) => {
 		return favorites.filter((favorite) => favorite.article_id === article_id);
-	},
-
-	addFavorite: (user_id: string, article_id: string) => {
-		const newFavorite = {
-			user_id,
-			article_id,
-			created_at: new Date(),
-			updated_at: new Date(),
-		};
-		favorites.push(newFavorite);
-		return newFavorite;
 	},
 
 	removeFavorite: (user_id: string, article_id: string) => {
