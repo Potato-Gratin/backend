@@ -5,7 +5,7 @@ export const badgeRouter = express.Router();
 
 badgeRouter.post(
 	"/articles/:articleId/reviews/:reviewId",
-	BadgeController.addBadge,
+	BadgeController.createBadge,
 );
 badgeRouter.get(
 	"/articles/:articleId/reviews/:reviewId",
