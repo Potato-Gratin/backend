@@ -30,17 +30,17 @@ export const BadgeModel = {
 	 * @throws {Error} DB操作に失敗した場合
 	 */
 	getBadgesByReview: async (
-		reviewId: string
+		reviewId: string,
 	): Promise<Result<Badge | null, PostgrestError>> => {
 		const { data, error } = await supabase
 			.from("badge")
 			.select("*")
 			.eq("review_id", reviewId);
-	
+
 		if (error) {
 			return new Failure(error);
 		}
-	
+
 		return new Success(data[0] || null);
 	},
 	getReceivedBadges: (displayId: string) => {
