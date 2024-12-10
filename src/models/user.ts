@@ -3,6 +3,7 @@ import supabase from "../libs/supabase";
 import { Failure, type Result, Success } from "../types/result.types";
 
 export type UserForm = {
+	id: string;
 	displayId: string;
 	name: string;
 	description?: string;
