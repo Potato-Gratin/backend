@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import { UserModel } from "../models/user";
+import supabase from "../libs/supabase";
 
 export const UserController = {
 	/**
@@ -21,9 +22,11 @@ export const UserController = {
 			if (e.code === "23505") {
 				// 一意制約違反
 				res.status(409).json({ message: e.message });
+				return;
 			} else {
 				console.log(e);
 				res.status(500).json({ message: e.message });
+				return;
 			}
 		}
 
