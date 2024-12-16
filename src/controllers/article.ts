@@ -50,9 +50,9 @@ export const ArticleController = {
 	 * @param res
 	 */
 	findById: async (req: Request, res: Response) => {
-		const { displayId } = req.params;
+		const { id } = req.params;
 
-		const result = await ArticleModel.findById(displayId);
+		const result = await ArticleModel.findById(id);
 		if (result.isFailure()) {
 			const e = result.value;
 			console.log(e);
