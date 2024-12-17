@@ -12,13 +12,21 @@ export const BadgeController = {
 		);
 		res.status(201).json(badge);
 	},
-	getBadgesByReview: (req: Request, res: Response) => {
-		const { articleId, reviewId } = req.params;
-		const badges = BadgeModel.getBadgesByReview(
-			articleId,
-			Number.parseInt(reviewId),
-		);
-		res.status(200).json(badges);
+	getBadgesByReview: async (req: Request, res: Response) => {
+		const { reviewId } = req.params;
+		const result = await BadgeModel.getBadgesByReview(reviewId);
+		if (result.isFailure()) {
+			const e = result.value;
+			console.log(e);
+			res.status(500).json({ message: e.message });
+			return;
+		}
+
+		const badge = result.value;
+		if (!badge) {
+			res.status(404).json({ message: "badge not found" });
+		}
+		res.status(200).json(badge);
 	},
 	getReceivedBadges: (req: Request, res: Response) => {
 		const { displayId } = req.params;
