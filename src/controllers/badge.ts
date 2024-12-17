@@ -1,7 +1,5 @@
 import type { Request, Response } from "express";
 import { BadgeModel } from "../models/badge";
-import { Result, Failure, Success } from '../types/result.types';
-import type { PostgrestError } from '@supabase/supabase-js';
 
 export const BadgeController = {
 	addBadge: (req: Request, res: Response) => {

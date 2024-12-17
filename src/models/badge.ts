@@ -1,6 +1,7 @@
 import type { PostgrestError } from "@supabase/supabase-js";
 import supabase from "../libs/supabase";
 import { Failure, type Result, Success } from "../types/result.types";
+import { UserModel } from './user';
 
 export interface Badge {
 	id: string;
@@ -47,17 +48,19 @@ export const BadgeModel = {
 
 	/**
 	 * 指定したユーザーIDのバッジ情報を取得する。
-	 * @param {string} userId　ユーザーID
+	 * @param {string} 　ユーザーID
 	 * @returns {Promise<Result<Badge | null, PostgrestError>>} 
 	 * @throws {Error} DB操作に失敗した場合
 	 */
 	getReceivedBadges: async (
-		userId: string
+		displayId: string
 	): Promise<Result<Badge | null, PostgrestError>> => {
+
+		const userResult = await UserModel.findById(userId);
 		const { data, error} = await supabase
 			.from("badge")
 			.select("*")
-			.eq("userId", userId);
+			.eq("displayId", displayId);
 		if(error) {
 			return new Failure(error);
 		}
